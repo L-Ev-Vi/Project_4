@@ -22,6 +22,10 @@ black = "^26.1.0"
 mypy = "^1.19.1"
 
 
+
+[tool.poetry.group.dev.dependencies]
+django = "^6.0.2"
+
 [tool.mypy]
 disallow_untyped_defs = true
 warn_return_any = true
