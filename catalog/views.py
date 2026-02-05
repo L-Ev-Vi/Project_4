@@ -4,17 +4,13 @@ from django.shortcuts import render
 
 
 def index(request) -> HTMLDoc:
-    return render(request, 'catalog/index.html')
+    """Контроллер принимающий GET запрос и возвращающий ответом представление главной страницы проекта."""
+    return render(request, "catalog/index.html")
 
 
-def contacts(request):
-    if request.method == 'POST':
-        return render(request, 'catalog/message.html')
-    return render(request, 'catalog/contacts.html')
-
-
-    # if request.method == 'POST':
-    #     name = request.POST.get('name')
-    #     email = request.POST.get('email')
-    #     message = request.POST.get('message')
-# print(f'You have new message from {name}({email}): {message}')
+def contacts(request) -> HTMLDoc:
+    """Контроллер принимающий GET и POST запросы, и возвращающий ответом представление страницы с контактами."""
+    if request.method == "POST":
+        name = request.POST.get("name")
+        return render(request, "catalog/message.html", {"name": name})
+    return render(request, "catalog/contacts.html")

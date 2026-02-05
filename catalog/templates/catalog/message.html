@@ -3,17 +3,81 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skystore/Контакты/Ответ</title>
+    <title>Online store/Контакты/Ответ</title>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-        <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
-        <nav class="ms-5">
-            <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
-            <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
-        </nav>
+    <div class="sticky-top" style="background: #8a2be2; color: white;">
+        <div class="p-0 px-md-0 mb-0 border-bottom">
+            <nav class="navbar navbar-expand-lg">
+              <div class="container-fluid">
+                  <h5 class="me-5 my-0 mr-md-auto font-weight-normal">Online store</h5>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                      <a class="me-2 p-2 btn btn-warning" href="/">Каталог</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="me-2 p-2 btn btn-warning" href="/contacts/">Контакты</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+        </div>
     </div>
-    <h1>Hello, World</h1>
+    <div class="row g-0" style="background: #a033ff;">
+
+        <div class="row justify-content-evenly mt-5 mb-5">
+            <div class="col-4">
+                <div class="card text-bg-dark">
+                  <img src="https://avatars.mds.yandex.net/i?id=c62a53011f41dcfa1bb722de600cc3d921eb0de9-11835812-images-thumbs&n=13" class="card-img" alt="...">
+                  <div class="card-img-overlay">
+                      <div class="row">
+                        <div class="col-6"></div>
+                        <div class="col-6">
+                            <h6 class="card-text" style="color: black;">Привет, {{name}}, благодарим за обращение.</h6>
+                            <h5 class="card-title" style="color: black;">Мы обязательно с тобой свяжемся!</h5>
+                        </div>
+                      </div>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+        <footer class="text-center pt-4 my-md-1 pt-md-4 border-top">
+            <div class="row">
+                <div class="col-6 col-md">
+                    SkyStore
+                    <small class="d-block mb-3 text-muted">&copy; 2026</small>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Категории</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Рассылки</a></li>
+                        <li><a class="text-muted" href="#">Телеграм боты</a></li>
+                        <li><a class="text-muted" href="#">Полезные утилиты</a></li>
+                        <li><a class="text-muted" href="#">Веб-приложения</a></li>
+                        <li><a class="text-muted" href="#">Микросервисы</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Дополнительно</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Мы пишем</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>О нас</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="/contacts/">Контакты</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+    </div>
 </body>
 </html>
