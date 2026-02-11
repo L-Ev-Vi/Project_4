@@ -22,10 +22,15 @@ black = "^26.1.0"
 mypy = "^1.19.1"
 
 
+
+[tool.poetry.group.dev.dependencies]
+django = "^6.0.2"
+django-stubs = "^5.2.9"
+
 [tool.mypy]
 disallow_untyped_defs = true
 warn_return_any = true
-exclude = ['.venv','tests', 'idea', 'git', '.coverage', 'logs']
+exclude = ['.venv','tests', 'idea', 'git', '.coverage', 'logs', 'static']
 
 [tool.isort]
 profile = "black"
@@ -40,6 +45,7 @@ exclude = '''
       \.idea
       \.venv
       \.coverage
+      \.static
   )/
 )
 '''
