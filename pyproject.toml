@@ -29,6 +29,7 @@ django-stubs = "^5.2.9"
 psycopg2 = "^2.9.11"
 ipython = "^9.10.0"
 python-dotenv = "^1.2.1"
+pillow = "^12.1.1"
 
 [tool.mypy]
 disallow_untyped_defs = true
