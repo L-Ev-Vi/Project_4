@@ -1,0 +1,80 @@
+[
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Добрый зайчик",
+        "description": "Необычно, да тепло, ещё как.",
+        "image": "Заяц-1.jpg",
+        "category": 1,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Шлепалка БДСМ",
+        "description": "Незабываемые ощущения",
+        "image": "bitch.jpg",
+        "category": 4,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Наручники",
+        "description": "Главное - не потерять ключ.",
+        "image": "naruchniki.jpg",
+        "category": 4,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "Маска",
+        "description": "Инструкция прилагается",
+        "image": "maska.jpg",
+        "category": 3,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "name": "Фантомас",
+        "description": "Надеть одно, нужно ещё уметь снять.",
+        "image": "Fantomas.jpg",
+        "category":2,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Плеть",
+        "description": "Если больно, значит, действует.",
+        "image": "pl.jpg",
+        "category": 4,
+        "price": 100.0,
+        "created_at": "2026-02-11",
+        "updated_at": "2026-02-11"
+    }
+}
+]

@@ -1,6 +1,6 @@
 from typing import Any
-from django.http import HttpRequest
 
+from django.http import HttpRequest
 from django.shortcuts import render
 
 

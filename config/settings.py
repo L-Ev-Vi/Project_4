@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-from dotenv import load_dotenv
+
 import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,7 +85,7 @@ DATABASES = {
         "USER": os.getenv("USER"),
         "PASSWORD": os.getenv("PASSWORD"),
         "HOST": os.getenv("HOST"),
-        "PORT": os.getenv("PORT")
+        "PORT": os.getenv("PORT"),
     }
 }
 
