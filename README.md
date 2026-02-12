@@ -422,9 +422,9 @@ class Command(BaseCommand):
         ...
         
 ````
-Остальная часть кода описана в файле add_catalog.py
+Остальная часть кода описана в файле [add_catalog.py](catalog/management/commands/add_catalog.py)
 
-После создания команды она была вызвана с помощью команды:
+После создания кастомной команды она была вызвана с помощью команды:
 
 `python manage.py add_catalog`
 
