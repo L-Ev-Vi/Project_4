@@ -42,3 +42,24 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["name"]
         db_table = "product"
+
+
+class Contacts(models.Model):
+    """Класс описывающий структуру таблицы для хранения контактных данных."""
+
+    address = models.CharField(max_length=250, verbose_name="Адрес")
+    country = models.CharField(max_length=50, verbose_name="Страна")
+    inn = models.IntegerField(verbose_name="ИНН")
+    phone = models.CharField(max_length=12, verbose_name="Контактный телефон")
+
+    def __str__(self) -> str:
+        """Метод определяет строковое представление объекта."""
+        return f"{self.address} - {self.phone}"
+
+    class Meta:
+        """Клас который добавляет метаданные к модели Category."""
+
+        verbose_name = "Контакт"
+        verbose_name_plural = "Контакты"
+        ordering = ["phone"]
+        db_table = "contacts"
