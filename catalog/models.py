@@ -1,3 +1,65 @@
 from django.db import models
 
-# Create your models here.
+
+class Category(models.Model):
+    """Класс описывающий структуру таблицы с категориями товаров."""
+
+    name = models.CharField(max_length=50, verbose_name="Наименование")
+    description = models.TextField(blank=True, verbose_name="Описание")
+
+    def __str__(self) -> str:
+        """Метод определяет строковое представление объекта."""
+        return f"{self.name}"
+
+    class Meta:
+        """Клас который добавляет метаданные к модели Category."""
+
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        ordering = ["name"]
+        db_table = "category"
+
+
+class Product(models.Model):
+    """Класс описывающий структуру таблицы с товарами."""
+
+    name: str = models.CharField(max_length=150, verbose_name="Наименование")
+    description = models.TextField(blank=True, verbose_name="Описание")
+    image = models.ImageField(upload_to="images/", null=True, blank=True, verbose_name="Изображения")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product", verbose_name="категория")
+    price = models.FloatField(verbose_name="Цена")
+    created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateField(auto_now=True, verbose_name="Дата последнего изменения")
+
+    def __str__(self) -> str:
+        """Метод определяет строковое представление объекта."""
+        return f"{self.name} - {self.price}"
+
+    class Meta:
+        """Клас который добавляет метаданные к модели Category."""
+
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
+        ordering = ["name"]
+        db_table = "product"
+
+
+class Contacts(models.Model):
+    """Класс описывающий структуру таблицы для хранения контактных данных."""
+
+    address = models.CharField(max_length=250, verbose_name="Адрес")
+    country = models.CharField(max_length=50, verbose_name="Страна")
+    inn = models.IntegerField(verbose_name="ИНН")
+    phone = models.CharField(max_length=12, verbose_name="Контактный телефон")
+
+    def __str__(self) -> str:
+        """Метод определяет строковое представление объекта."""
+        return f"{self.address} - {self.phone}"
+
+    class Meta:
+        """Клас который добавляет метаданные к модели Category."""
+
+        verbose_name = "Контакт"
+        verbose_name_plural = "Контакты"
+        ordering = ["phone"]
+        db_table = "contacts"
