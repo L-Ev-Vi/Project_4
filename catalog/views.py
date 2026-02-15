@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 
@@ -10,7 +11,12 @@ def index(request: HttpRequest) -> Any:
     """Контроллер принимающий GET запрос и возвращающий представление главной страницы проекта."""
 
     # получение списка продуктов из БД
-    context = {"products": get_list_or_404(Product)}
+    products = get_list_or_404(Product)
+    # создание списка пагинации для ограниченного количества продуктов на странице
+    paginator = Paginator(products, 6) # определяем количество продуктов на странице
+    page_number = request.GET.get("page")
+    page_object = paginator.get_page(page_number)
+    context = {"page_object": page_object}
     # генерация HTML-кода при GET-запросе (главной страницы каталога)
     return render(request, "catalog/index.html", context)
 
