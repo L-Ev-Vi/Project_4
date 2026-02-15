@@ -2,105 +2,104 @@
 
 {% block title %}Товар {{ product.name }}{% endblock %}
 
-
 {% block content %}
 {% include 'catalog/header.html' %}
 <div>
-<div class="container mt-0 p-0">
-    <div class="row g-0">
-        <div class="col-lg-9 col-md-8 col-sm-12 p-3">
-            <div class="card" style="max-width: 900px;">
-              <div class="row g-0">
-                <div class="col-md-6">
-                  <img src="/media/images/{{ product.image }}" class="img-fluid rounded-start" alt="...">
+    <div class="container mt-0 p-0">
+        <div class="row g-0">
+            <div class="col-lg-9 col-md-8 col-sm-12 p-3">
+                <div class="card" style="max-width: 900px;">
+                  <div class="row g-0">
+                    <div class="col-md-6">
+                      <img src="/media/images/{{ product.image }}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <div class="card-body">
+                                    <h6 class="card-title">Название:</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ product.name }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <div class="card-body">
+                                    <h6 class="card-title">Категория:</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-text display">{{ product.category }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <div class="card-body">
+                                    <h6 class="card-title">Описание:</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-text display"><small class="text-body-secondary">{{ product.description }}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <div class="card-body">
+                                    <h6 class="card-title">Цена:</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-text display-6">$ {{ product.price }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <footer class="text-center pt-4 my-md-1 pt-md-4">
+                                <a class="col-6 mx-auto btn-lg btn-block btn btn-outline-danger" href="#">Купить <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-through-heart-fill" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M2.854 15.854A.5.5 0 0 1 2 15.5V14H.5a.5.5 0 0 1-.354-.854l1.5-1.5A.5.5 0 0 1 2 11.5h1.793l3.103-3.104a.5.5 0 1 1 .708.708L4.5 12.207V14a.5.5 0 0 1-.146.354zM16 3.5a.5.5 0 0 1-.854.354L14 2.707l-1.006 1.006c.236.248.44.531.6.845.562 1.096.585 2.517-.213 4.092-.793 1.563-2.395 3.288-5.105 5.08L8 13.912l-.276-.182A24 24 0 0 1 5.8 12.323L8.31 9.81a1.5 1.5 0 0 0-2.122-2.122L3.657 10.22a9 9 0 0 1-1.039-1.57c-.798-1.576-.775-2.997-.213-4.093C3.426 2.565 6.18 1.809 8 3.233c1.25-.98 2.944-.928 4.212-.152L13.292 2 12.147.854A.5.5 0 0 1 12.5 0h3a.5.5 0 0 1 .5.5z"/>
+                                    </svg>
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Название:</h6>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h4 class="card-title">{{ product.name }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Категория:</h6>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <p class="card-text display">{{ product.category }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Описание:</h6>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <p class="card-text display"><small class="text-body-secondary">{{ product.description }}</small></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Цена:</h6>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <p class="card-text display-6">$ {{ product.price }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-0">
-                        <footer class="text-center pt-4 my-md-1 pt-md-4">
-                            <a class="col-6 mx-auto btn-lg btn-block btn btn-outline-danger" href="#">Купить <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-through-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M2.854 15.854A.5.5 0 0 1 2 15.5V14H.5a.5.5 0 0 1-.354-.854l1.5-1.5A.5.5 0 0 1 2 11.5h1.793l3.103-3.104a.5.5 0 1 1 .708.708L4.5 12.207V14a.5.5 0 0 1-.146.354zM16 3.5a.5.5 0 0 1-.854.354L14 2.707l-1.006 1.006c.236.248.44.531.6.845.562 1.096.585 2.517-.213 4.092-.793 1.563-2.395 3.288-5.105 5.08L8 13.912l-.276-.182A24 24 0 0 1 5.8 12.323L8.31 9.81a1.5 1.5 0 0 0-2.122-2.122L3.657 10.22a9 9 0 0 1-1.039-1.57c-.798-1.576-.775-2.997-.213-4.093C3.426 2.565 6.18 1.809 8 3.233c1.25-.98 2.944-.928 4.212-.152L13.292 2 12.147.854A.5.5 0 0 1 12.5 0h3a.5.5 0 0 1 .5.5z"/>
-                                </svg>
-                            </a>
-                        </footer>
-                    </div>
-                </div>
-              </div>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-12 p-3">
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal text-center">Если остались вопросы? Свяжитесь с нами</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="" class="form-floating">
-                        {% csrf_token %}
-                        <div class="mb-0">
-                            <label for="name"></label>
-                            <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
-                        </div>
-                        <div class="mb-0">
-                            <label for="phone"></label>
-                            <input type="text" name="phone" class="form-control" id="phone" placeholder="Контактный телефон" required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="message"></label>
-                            <textarea type="text" name="message" class="form-control" id="message" placeholder="Сообщение" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
-                    </form>
+            <div class="col-lg-3 col-md-4 col-sm-12 p-3">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal text-center">Остались вопросы? Свяжитесь с нами</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="" class="form-floating">
+                            {% csrf_token %}
+                            <div class="mb-0">
+                                <label for="name"></label>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
+                            </div>
+                            <div class="mb-0">
+                                <label for="phone"></label>
+                                <input type="text" name="phone" class="form-control" id="phone" placeholder="Контактный телефон" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="message"></label>
+                                <textarea type="text" name="message" class="form-control" id="message" placeholder="Сообщение" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 {% endblock %}
