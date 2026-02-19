@@ -1,0 +1,56 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Добавление продукта{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+<div class="pricing-header pt-md-1 pb-md-1 mx-auto text-center">
+    <h5 class="display-5 p-0" style="color: white;">Добавление продукта</h5>
+    <p class="lead" style="color: white;">Рабочая форма для добавления товаров!</p>
+</div>
+
+<!--<div>-->
+    <div class="container mt-0 p-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6 col-md-9 col-sm-12">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal text-center">Укажите данные о продукте</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="" class="form-floating">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="name"></label>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Название" required>
+                            </div>
+                            <div class="input-group mb-0">
+                              <label class="input-group-text" for="category">Выберите категорию</label>
+                                    <select class="form-select" name="category" type="file" id="category">
+                                        {% for category in categories %}
+                                            <option value="{{ category.pk }}">{{ category.name }}</option>
+                                        {% endfor %}
+                                  </select>
+                            </div>
+                            <div class="mb-0">
+                                <label for="description"></label>
+                                <textarea type="text" name="description" class="form-control" id="description" placeholder="Описание"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price"></label>
+                                <input type="number" name="price" class="form-control" id="price" placeholder="Цена" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Добавьте изображение</label>
+                                <input class="form-control" name="image" type="file" accept="/media/images/*" id="image">
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
