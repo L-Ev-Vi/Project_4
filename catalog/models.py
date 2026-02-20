@@ -24,7 +24,7 @@ class Product(models.Model):
     """Класс описывающий структуру таблицы с товарами."""
 
     name: str = models.CharField(max_length=150, verbose_name="Наименование")
-    description = models.TextField(blank=True, verbose_name="Описание")
+    description = models.TextField(blank=True, null=True, verbose_name="Описание")
     image = models.ImageField(upload_to="images/", null=True, blank=True, verbose_name="Изображения")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product", verbose_name="категория")
     price = models.FloatField(verbose_name="Цена")
@@ -63,3 +63,25 @@ class Contacts(models.Model):
         verbose_name_plural = "Контакты"
         ordering = ["phone"]
         db_table = "contacts"
+
+
+# class Appeals(models.Model):
+#     """Класс описывающий структуру таблицы для хранения контактных данных при обращении пользователей."""
+#
+#     name = models.CharField(max_length=80, verbose_name="Имя")
+#     phone = models.CharField(max_length=12, verbose_name="Контактный телефон")
+#     email = models.EmailField(max_length = 254, verbose_name="Электронная почта")
+#     message = models.TextField(blank=True, null=True, verbose_name="Сообщение")
+#     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время обращения")
+#
+#     def __str__(self) -> str:
+#         """Метод определяет строковое представление объекта."""
+#         return f"{self.name} - {self.phone}"
+#
+#     class Meta:
+#         """Клас который добавляет метаданные к модели Category."""
+#
+#         verbose_name = "Обращение"
+#         verbose_name_plural = "Обращения"
+#         ordering = ["name", "phone", "email"]
+#         db_table = "appeals"

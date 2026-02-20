@@ -73,7 +73,7 @@
                         </div>
                         <div class="row g-0">
                             <footer class="text-center pt-4 my-md-1 pt-md-2">
-                                <a class="col-7 mx-auto btn-lg btn-block btn btn-outline-primary" href="/">Вернуться в каталог</a>
+                                <a class="col-7 mx-auto btn-lg btn-block btn btn-outline-primary" href="{% url 'catalog:catalog' %}">Вернуться в каталог</a>
                             </footer>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                             </div>
                             <div class="mb-2">
                                 <label for="message"></label>
-                                <textarea type="text" name="message" class="form-control" id="message" placeholder="Сообщение" required></textarea>
+                                <textarea type="text" name="message" class="form-control" id="message" placeholder="Сообщение"></textarea>
                             </div>
                             <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
                         </form>
