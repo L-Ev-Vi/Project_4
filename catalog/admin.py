@@ -22,6 +22,8 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "price",
         "category",
+        "created_at",
+        "updated_at",
     )
     list_filter = ("category",)
     search_fields = (

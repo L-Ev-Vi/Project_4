@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block title %}Удалить книгу{% endblock %}
+
+{% block content %}
+{% include 'blog/header.html' %}
+<div class="jumbotron">
+    <div class="container">
+        <h2>Удалить статью</h2>
+        <p>Вы уверены, что хотите удалить "{{ article.heading }}"?</p>
+        <p>Дата публикации: {{ article.created_at|date:"d F Y" }}</p>
+        <p>Просмотры: {{ article.number_views }}</p>
+        <form method="post" class="pt-2 my-md-1 pt-md-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'blog:blog' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block title %}{{ article.heading }}{% endblock %}
+
+{% block content %}
+{% include 'blog/header.html' %}
+<div class="jumbotron">
+    <div class="container">
+        <h2>{{ article.heading }}</h2>
+        <p>Дата публикации: {{ article.created_at|date:"d F Y" }}</p>
+        <p>Просмотры: {{ article.number_views }}</p>
+        <p>{{ article.content }}</p>
+        <footer class="pt-2 my-md-1 pt-md-2">
+            <a class="btn btn-primary" href="{% url 'blog:update_article' article.pk %}">Редактировать</a>
+        </footer>
+        <footer class="pt-2 my-md-1 pt-md-2">
+            <a class="btn btn-danger" href="{% url 'blog:delete_article' article.pk %}">Удалить</a>
+        </footer>
+    </div>
+</div>
+{% endblock %}
