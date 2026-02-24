@@ -23,12 +23,12 @@ class CatalogView(ListView):
 class ContactView(View):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу с контактами."""
 
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest) ->Any:
         """Метод генерации HTML-кода при GET-запросе (страницы Контактов)"""
         context = {"contact": get_object_or_404(Contacts)}
         return render(request, "catalog/contacts.html", context)
 
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest) ->Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
@@ -42,7 +42,7 @@ class ProductItemView(DetailView):
     template_name = "catalog/product_item.html"  # определяем шаблон
     context_object_name = "product"  # определяем переменную для использования в шаблоне
 
-    def post(self, request: HttpRequest, **kwargs: Any):
+    def post(self, request: HttpRequest, **kwargs: Any) -> Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")

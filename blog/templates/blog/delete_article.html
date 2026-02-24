@@ -1,6 +1,6 @@
 {% extends 'blog/base.html' %}
 {% load my_tags %}
-{% block title %}Удалить книгу{% endblock %}
+{% block title %}Удалить статью{% endblock %}
 
 {% block content %}
 {% include 'blog/header.html' %}
@@ -13,7 +13,7 @@
         <form method="post" class="pt-2 my-md-1 pt-md-2">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Удалить</button>
-            <a href="{% url 'blog:blog' %}" class="btn btn-secondary">Отмена</a>
+            <a href="{% url 'blogs:blogs' %}" class="btn btn-secondary">Отмена</a>
         </form>
     </div>
 </div>
