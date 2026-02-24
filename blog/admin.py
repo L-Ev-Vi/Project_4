@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from blog.models import Article
 
+
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     """Класс регистрации и настройки отображения модели 'Article' в админке"""

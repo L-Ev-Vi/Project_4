@@ -1,7 +1,7 @@
 ## Учебный проект Prodject_4
 # *Проект создания интернет магазина, на базе фреймворка Django.*
 *В проекте реализованны следующие задачи:*
-+ *описана работа контролеров;*
++ *описана работа контролеров FBV и CBV;*
 + *настройка подключения к базе данных;*
 + *описаны модели;*
 + *выполнена регистрация моделей в админке;*
@@ -11,6 +11,7 @@
 + *выполнение запросов через shel;*
 + *созданы фикстуры на основе созданных моделей;*
 + *описаны кастомные команды;*
++ *описана логика отправки электронной почты;*
 
 *Данные задачи были реализованны с использованием фреймворка Django который содержит весь не обходимый набора инструментов и библиотек
 для создания веб-приложений. Данный проект предназначено для запуска с локального компьютера, способ запуска описан в разделе [установка](#установка) и [запуск проекта](#запуск-проекта).*
@@ -42,7 +43,8 @@
 + Познакомится с фреймворком Django;
 + Изучить основные компоненты фреймворка Django;
 + Изучить структуру проекта Django и назначение основных файлов и директорий, таких как *manage.py, settings.py, urls.py и views.py;
-+ Познакомиться с созданием контроллеров (views) в Django, которые обрабатывают HTTP-запросы и формируют HTTP-ответы;
++ Научится создавать и регистрировать приложения в Django;
++ Познакомиться с созданием контроллеров FBV и CBV (views) в Django, которые обрабатывают HTTP-запросы и формируют HTTP-ответы;
 + Узнать о механизмах маршрутизации в Django, связывающих URL-адреса с соответствующими контроллерами;
 + Изучить способы создания и подключения статических файлов (CSS, JS, изображения);
 + Вёрстка страниц с использованием HTML и CSS;
@@ -98,11 +100,19 @@ load_dotenv(verbose=True)
  - `INSTALLED_APPS = [
     ...,
     "django.contrib.staticfiles",
-    "catalog",]` — содержит список всех приложений, активированных в проекте. Этот список включает как встроенные приложения Django, так и собственные, в данном случае приложение `catalog`.;
+    "catalog",
+    "blog"]` — содержит список всех приложений, активированных в проекте. Этот список включает как встроенные приложения Django, так и собственные, в данном случае приложение `catalog` и `blog`.;
  - `TIME_ZONE = "Europe/Moscow"` — устанавливает часовую зону для проекта. В данном проекте установленна зона для московского времени;
  - `STATICFILES_DIRS = (BASE_DIR / "static",)` — это список директорий на диске, из которых подгружаются статические файлы;
  - `MEDIA_URL = "/media/"` — содержит информацию о URL для доступа к медиафайлам;
  - `MEDIA_ROOT = BASE_DIR / "media"`  — это директория на диске, где хранятся медиафайлы, загружаемые пользователями;
+
+ - `EMAIL_HOST = 'smtp.mail.ru'`
+ - `EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")` — импорт адреса электронной почты из переменной окружения *.env*;
+ - `EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")` — импорт ключа приложения для отправки писем с адреса электронной почты из переменной окружения *.env*;
+ - `EMAIL_PORT = 465` — порт для отправки электронных писем;
+ - `EMAIL_USE_SSL = True` — способ безопасной передачи данных между клиентом и сервером для отправки электронных писем;
+ - `EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'` — встроенный бэкенд для отправки электронных писем в Django, который работает через сервер Simple Mail Transfer Protocol (SMTP).;
 
 Остальные настройки были уставлены по умолчанию.
 
@@ -116,48 +126,155 @@ load_dotenv(verbose=True)
 *PASSWORD = пароль пользователя PostgreSQL.*
 *HOST = адрес сервера базы данных.*
 *PORT = порт, на котором работает PostgreSQL, обычно 5432*
+*EMAIL_HOST_USER = адрес вашей электронной почты @mail.ru*
+*EMAIL_HOST_PASSWORD = пароль, сгенерированный в аккаунте вашей почты для доступа приложения к рассылке писем от вашего имени.*
+*EMAIL_USER = адрес вашей электронной почты на которую будет отправляться сообщение*
 
 ## Создание и регистрация приложения 
 Для создания нового приложения в проекте Django использовалась команда:
 
 `python manage.py startapp catalog`
 
-В данном проекте было создано приложение с именем *catalog*
+В данном проекте было создано приложение с именем *catalog* и *blog*
 
 После создания приложения Django создал директорию с рядом файлов и директорий. 
 
 После создания приложения оно было зарегистрировано в проекте. Это было выполнено с помощью добавления имени приложения в список 
 `INSTALLED_APPS = [
     ...,
-    "catalog",]` в файле settings.py.
+    "catalog",
+    "blog"]` в файле settings.py.
 
 ## Создание контроллеров
-В проекте реализованны простые контроллер, которые обрабатывают GET и POST запрос и возвращать HTML-страницы.
+В проекте реализованны как контроллер FBV(функциональное представление) так CBV(классовое представление), которые обрабатывают GET и POST запрос и возвращать HTML-страницы.
 
-В файле *views.py* приложения созданы функции, которые являются контроллерами. Эти функции будут обрабатывать запросы и возвращать HTML-страницы.
+Контроллеры FBV(функциональное представление) реализованы в приложении *catalog*, но не используются в проекте. 
+Они были закомментированны в отдельные строки.
 
 #### Импорт необходимых модулей:
 
+В приложении *catalog*
+
 - `from typing import Any`
-
+- `from django.views.generic.edit import CreateView, View`
+- `from django.views.generic import ListView, TemplateView, DetailView`
+- `from django.urls import reverse_lazy`
+- #from django.core.paginator import Paginator - импорт класса для настройки пагинации. Ис пользуется в FBV.
 - `from django.http import HttpRequest`
+- `from django.shortcuts import render, get_object_or_404, get_list_or_404`
+- `from catalog.models import Product, Contacts, Category`
 
-- `from django.shortcuts import render`
+В приложении *blog*
+
+- `import os`
+- `from typing import Any`
+- `from django.urls import reverse_lazy`
+- `from django.views.generic import ListView, DetailView`
+- `from django.views.generic.edit import CreateView, UpdateView, DeleteView`
+- `from dotenv import load_dotenv`
+- `from blog.models import Article`
+- `from blog.utils import send_email_tu_user`
 
 #### Создание функций-контроллеров:
 
+В приложении *catalog*
+
 *Контроллер принимающий GET запрос и возвращающий представление главной страницы проекта.*
-`def index(request: HttpRequest) -> Any:
+
+#`def index(request: HttpRequest) -> Any:
     return render(request, "catalog/index.html")`
 
 *Контроллер принимающий GET и POST запросы, и возвращающий представление страницы с контактами.*
-`def contacts(request: HttpRequest) -> Any:
+
+#`def contacts(request: HttpRequest) -> Any:
     if request.method == "POST":
         name = request.POST.get("name")`
         *генерация HTML-кода при POST-запросе(заполнение и отправка формы)*
         `return render(request, "catalog/message.html", {"name": name})`
     *генерация HTML-кода при GET-запросе*
     `return render(request, "catalog/contacts.html")`
+
+#### Создание классов-контроллеров:
+В файле *views.py* приложений созданы CBV, которые являются контроллерами. 
+CBV (Class-Based Views) — это способ определения и обработки представлений в Django с помощью классов.
+
+Django предоставляет механизм дженериков (Generic Class-Based Views), 
+который позволяет быстро и эффективно создавать контроллеры для выполнения типичных задач, таких как создание, чтение, 
+обновление и удаление объектов (CRUD-операции).
+
+CBV в приложении *catalog*
+
+```
+class CatalogView(ListView):
+    """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
+
+    model = Product  # определяем модель
+    template_name = "catalog/index.html"  # определяем шаблон
+    context_object_name = "page_object"  # определяем переменную для использования в шаблоне
+    paginate_by = 6  # определяем количество продуктов на странице
+
+
+class ContactView(View):
+    """Классовое представление принимающее GET и POST запрос и возвращающее страницу с контактами."""
+
+    def get(self, request: HttpRequest) ->Any:
+        """Метод генерации HTML-кода при GET-запросе (страницы Контактов)"""
+        context = {"contact": get_object_or_404(Contacts)}
+        return render(request, "catalog/contacts.html", context)
+
+    def post(self, request: HttpRequest) ->Any:
+        """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
+        В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
+        name = request.POST.get("name")
+        return render(request, "catalog/message.html", {"name": name})
+```
+
+CBV в приложении *blog*
+
+```
+class ListArticles(ListView):
+    """Классовое представление принимающее GET запрос и возвращающее страницу со статьями блога,
+    начиная с последней опубликованной статьи."""
+
+    model = Article  # определяем модель
+    template_name = "blog/blog.html"  # определяем шаблон
+    context_object_name = "blogs"  # определяем переменную для использования в шаблоне
+
+    def get_queryset(self) -> Any:
+        """Переопределённый метод 'get_queryset'.
+        Метод отбирает только те статьи у которых метод публикации равин 'True'."""
+
+        return super().get_queryset().filter(publication=True)
+
+
+class CreateArticles(CreateView):
+    """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления статьи."""
+
+    model = Article  # определяем модель
+    fields = ["heading", "content", "image", "publication"]  # указываем поля формы
+    template_name = "blog/add_article.html"  # определяем шаблон
+    success_url = reverse_lazy("blogs:blogs")  # определяем URL-адрес для перехода
+```
+
+В приложении *blog* модуля *utils.py* была реализованна функция отправки сообщения на указанный в переменной `EMAIL_USER`
+адрес электронной почты:
+
+```
+from django.conf import settings
+from django.core.mail import send_mail
+
+
+def send_email_tu_user(mail: str, subject: str, message: str) -> None:
+    """Функция для отправки писем.
+    Если в settings.py не настроен доступ к EMAIL_HOST_USER и EMAIL_HOST_PASSWORD, работа сервиса не прервётся."""
+    try:
+        from_email = settings.EMAIL_HOST_USER
+        send_mail(subject, message, from_email, [mail])
+    except Exception as e:
+        print(e)
+```
+
+Полную реализацию контроллеров вы можете посмотреть в модулях *views.py* которые расположены в корневых папках приложений.
 
 ## Настройка маршрутизации
 При создании проект Django, в корневой директории проекта создается файл 
@@ -183,12 +300,13 @@ load_dotenv(verbose=True)
 Определение списка urlpatterns:
 
 `urlpatterns = [
-    path("", views.index, name="index"),
-    path("contacts/", views.contacts, name="contacts"),]`
+    path("", views.CatalogView.as_view(), name="catalog"),
+    path("catalog/contacts/", views.ContactView.as_view(), name="contacts"),
+    ]`
 
 URL-путь `""` и `"contacts/"` — это части URL, которые будут использоваться для доступа к маршруту.
 
-Контроллер `views.index` и `views.contacts` — функции-контроллеры, которые будут выполнены при обращении к указанным путям.
+Контроллер `views.CatalogView.as_view()` и `views.ContactView.as_view()` — классы-контроллеры, которые будут выполнены при обращении к указанным путям.
 
 Имя маршрута `name="index"` и `name="contacts"` — имена маршрутов, которые используются в шаблонах при перенаправлении.
 
@@ -204,10 +322,13 @@ URL-путь `""` и `"contacts/"` — это части URL, которые б�
 Определение списка urlpatterns:
 
 `urlpatterns = [path("admin/", admin.site.urls),
-               path("", include("catalog.urls", namespace="catalog"))
+               path("", include("catalog.urls", namespace="catalog")),
+               path("", include("blog.urls", namespace="blogs")),
                ]`
 
 Строка `path("", include("catalog.urls", namespace="catalog"))` включает URL-шаблоны из файла *catalog/urls.py* и связывает их с пространством имен 'catalog'.
+
+Строка `path("", include("blog.urls", namespace="blogs"))` включает URL-шаблоны из файла *blog/urls.py* и связывает их с пространством имен 'blog'.
 
 Использование пространства имен позволяет группировать маршруты и избегать конфликтов имен.
 
@@ -369,12 +490,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 - `python -Xutf8 manage.py dumpdata catalog.Category --output catalog/category_fixture.json --indent 4`
 - `python -Xutf8 manage.py dumpdata catalog.Product --output catalog/product_fixture.json --indent 4`
+- `python -Xutf8 manage.py dumpdata blog.Article --output blog/article_fixture.json --indent 4`
 
 В результате выполнения данных команд бы ли получены *json* файлы:
 - *[category_fixture.json](catalog/category_fixture.json)*
 - *[product_fixture.json](catalog/product_fixture.json)*
+- *[article_fixture.json](blog/article_fixture.json)*
 
-Расположенные в корневой папке приложения *catalog*
+Расположенные в корневой папке приложения *catalog* и *blog*
 Для загрузки данных из фикстур в базу данных использовалась команда:
 
 `python manage.py loaddata catalog/product_fixture.json --ignorenonexistent`
@@ -391,7 +514,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 Для создания кастомной команды были выполнены следующие шаги:
 
-Создан пакет *management* в приложении *catalog*, в нем создать пакет *commands*.
+Создан пакет *management* в приложении *catalog* и *blog*, в нем создан пакет *commands*.
 Создан файл команды внутри директории *commands*.
 
     catalog/
@@ -422,14 +545,16 @@ class Command(BaseCommand):
         ...
         
 ````
-Остальная часть кода описана в файле [add_catalog.py](catalog/management/commands/add_catalog.py)
+Остальная часть кода описана в файле [add_catalog.py](catalog/management/commands/add_catalog.py) приложения *catalog*, 
+и в файле [add_catalog.py](catalog/management/commands/add_catalog.py) приложения *blog*.
 
 После создания кастомной команды она была вызвана с помощью команды:
 
-`python manage.py add_catalog`
+- `python manage.py add_catalog`
+- `python manage.py add_article`
 
 ## Создание шаблонов
-Для создания шаблонов HTML в приложении создана папка *templates*, внутри которой создана — папка с именем нашего приложения, пример:
+Для создания шаблонов HTML в приложении создана папка *templates*, внутри которой создана — папка с именем приложения:
 `catalog/templates/catalog`
 
 Затем в этой папке были созданы файл шаблона:
@@ -442,6 +567,16 @@ class Command(BaseCommand):
 + *product_added.html* - шаблон представляющий страницу ответа от сервиса об удачном добавлении продукта;
 + *product_item.html* - шаблон представляющий страницу содержащую информацию о конкретном товаре;
 
+`blog/templates/blog`
+
+Затем в этой папке были созданы файл шаблона:
++ *base.html* - Базовый шаблон, который служит основой для других шаблонов;
++ *blog.html* - шаблон представляющий главную страницу приложения;
++ *delete_article.html* - шаблон представляющий страницу о подтверждении удаления статьи;
++ *header.html* - подшаблон представляющий элемент главного меню приложения использующийся во всех шаблонах;
++ *add_article.html* - шаблон представляющий страницу добавления продукта в ассортимент приложения;
++ *article.html* - шаблон представляющий страницу содержащую информацию о конкретной статье;
+
 При создании шаблонов использовались:
 
 шаблонные теги Django:
@@ -450,7 +585,8 @@ class Command(BaseCommand):
 + `{% url %}` - тег используется для динамического построения URL-адресов внутри шаблонов;
 
 и шаблонные фильтры Django:
-+ `|truncatechars:100` - фильтр который сокращает текст переменной до 100 символов.
++ `|truncatechars:100` - фильтр который сокращает текст переменной до 100 символов;
++ `|date:"d M Y"` - фильтр который форматирует дату в заданном формате.
 
 Также были подключены статические файлы.
 

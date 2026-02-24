@@ -1,7 +1,8 @@
+from typing import Any
+
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connection
-from typing import Any
 
 from catalog.models import Category, Product
 

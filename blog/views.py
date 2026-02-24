@@ -2,9 +2,10 @@ import os
 from typing import Any
 
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from dotenv import load_dotenv
+from django.utils.functional import Promise
 
 from blog.models import Article
 from blog.utils import send_email_tu_user
@@ -43,9 +44,10 @@ class DetailArticle(DetailView):
     template_name = "blog/article.html"  # определяем шаблон
     context_object_name = "article"  # определяем переменную для использования в шаблоне
 
-    def get_object(self, queryset=None) -> Any:
+    def get_object(self, queryset: Any =None) -> Any:
         """Метод используется для получения одного объекта, который будет отображаться в представлении.
-        Метод увеличивает значение поля просмотров на одну единицу при каждом переходе на конкретный объект (статью)."""
+        Метод увеличивает значение поля просмотров на одну единицу при каждом переходе на конкретный объект (статью).
+        """
 
         obj = super().get_object(queryset)
         obj.number_views += 1
@@ -53,8 +55,10 @@ class DetailArticle(DetailView):
         # логика отправки сообщения на указанный адрес электронной почты при достижении 100 просмотров статьи
         if obj.number_views == 100:
             mail = os.getenv("EMAIL_USER")
-            send_email_tu_user(mail, "Уведомление",
-                               f"Количество просмотров поста {obj.heading}, достигло 100 просмотров!")
+            send_email_tu_user(
+                mail, "Уведомление",
+                f"Количество просмотров поста {obj.heading}, достигло 100 просмотров!"
+            )
         return obj
 
 
@@ -65,14 +69,15 @@ class UpdateArticles(UpdateView):
     fields = ["heading", "content", "image", "publication"]  # указываем поля формы
     template_name = "blog/add_article.html"  # определяем шаблон
 
-    def get_success_url(self) -> None:
+    def get_success_url(self) -> str:
         """Метод перенаправления на страницу статьи после её редактирования."""
 
         return reverse_lazy("blogs:article", kwargs={"pk": self.object.pk})
 
 
 class DeleteArticle(DeleteView):
-    """Классовое представление принимающее GET и POST запрос и возвращающее страницу подтверждения об удалении статьи."""
+    """Классовое представление принимающее GET и POST запросы,
+    и возвращающее страницу подтверждения об удалении статьи."""
 
     model = Article  # определяем модель
     template_name = "blog/delete_article.html"  # определяем шаблон

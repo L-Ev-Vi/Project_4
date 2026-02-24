@@ -1,15 +1,16 @@
 from typing import Any
-from django.views.generic.edit import CreateView, View
-from django.views.generic import ListView, TemplateView, DetailView
-from django.urls import reverse_lazy
+
 # from django.core.paginator import Paginator
 from django.http import HttpRequest
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, ListView, TemplateView, View
+from django.views.generic.edit import CreateView
 
-from catalog.models import Product, Contacts, Category
+from catalog.models import Category, Contacts, Product
 
+# CBV
 
-#### CBV
 
 class CatalogView(ListView):
     """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
@@ -23,12 +24,12 @@ class CatalogView(ListView):
 class ContactView(View):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу с контактами."""
 
-    def get(self, request: HttpRequest) ->Any:
+    def get(self, request: HttpRequest) -> Any:
         """Метод генерации HTML-кода при GET-запросе (страницы Контактов)"""
         context = {"contact": get_object_or_404(Contacts)}
         return render(request, "catalog/contacts.html", context)
 
-    def post(self, request: HttpRequest) ->Any:
+    def post(self, request: HttpRequest) -> Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
@@ -50,7 +51,8 @@ class ProductItemView(DetailView):
 
 
 class Message(TemplateView):
-    """Классовое представление принимающее GET запрос и возвращающее страницу с сообщением об успешном добавлении товара."""
+    """Классовое представление принимающее GET запрос,
+    и возвращающее страницу с сообщением об успешном добавлении товара."""
 
     template_name = "catalog/product_added.html"  # определяем шаблон
 
@@ -65,7 +67,7 @@ class AddProductView(CreateView):
     success_url = reverse_lazy("catalog:message")  # определяем URL-адрес для перехода
 
 
-#### FBV
+# FBV
 
 # def index(request: HttpRequest) -> Any:
 #     """Контроллер принимающий GET запрос и возвращающий представление главной страницы проекта."""
