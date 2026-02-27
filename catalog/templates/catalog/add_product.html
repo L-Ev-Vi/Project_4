@@ -21,30 +21,31 @@
                     <div class="card-body">
                         <form method="post" action="" class="form-floating">
                             {% csrf_token %}
-                            <div class="mb-4">
-                                <label for="name"></label>
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Название" required>
-                            </div>
-                            <div class="input-group mb-0">
-                              <label class="input-group-text" for="category">Выберите категорию</label>
-                                    <select class="form-select" name="category" type="file" id="category">
-                                        {% for category in categories %}
-                                            <option value="{{ category.pk }}">{{ category.name }}</option>
-                                        {% endfor %}
-                                  </select>
-                            </div>
-                            <div class="mb-0">
-                                <label for="description"></label>
-                                <textarea type="text" name="description" class="form-control" id="description" placeholder="Описание"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="price"></label>
-                                <input type="number" name="price" class="form-control" id="price" placeholder="Цена" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="image" class="form-label">Добавьте изображение</label>
-                                <input class="form-control" name="image" type="file" accept="/media/images/*" id="image">
-                            </div>
+                            {{ form.as_p }}
+<!--                            <div class="mb-4">-->
+<!--                                <label for="name"></label>-->
+<!--                                <input type="text" name="name" class="form-control" id="name" placeholder="Название" required>-->
+<!--                            </div>-->
+<!--                            <div class="input-group mb-0">-->
+<!--                              <label class="input-group-text" for="category">Выберите категорию</label>-->
+<!--                                    <select class="form-select" name="category" type="file" id="category">-->
+<!--                                        {% for category in categories %}-->
+<!--                                            <option value="{{ category.pk }}">{{ category.name }}</option>-->
+<!--                                        {% endfor %}-->
+<!--                                  </select>-->
+<!--                            </div>-->
+<!--                            <div class="mb-0">-->
+<!--                                <label for="description"></label>-->
+<!--                                <textarea type="text" name="description" class="form-control" id="description" placeholder="Описание"></textarea>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3">-->
+<!--                                <label for="price"></label>-->
+<!--                                <input type="number" name="price" class="form-control" id="price" placeholder="Цена" required>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3">-->
+<!--                                <label for="image" class="form-label">Добавьте изображение</label>-->
+<!--                                <input class="form-control" name="image" type="file" accept="/media/images/*" id="image">-->
+<!--                            </div>-->
                             <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
                         </form>
                     </div>
