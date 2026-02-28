@@ -1,16 +1,21 @@
 {% extends 'catalog/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Добавление продукта{% endblock %}
 
 {% block content %}
 {% include 'catalog/header.html' %}
 <div class="pricing-header pt-md-1 pb-md-1 mx-auto text-center">
-    <h5 class="display-5 p-0" style="color: white;">Добавление продукта</h5>
-    <p class="lead" style="color: white;">Рабочая форма для добавления товаров!</p>
+    {% if object %}
+        <h5 class="display-5 p-0" style="color: white;">Редактировать продукт</h5>
+        <p class="lead" style="color: white;">Форма для редактирования товаров!</p>
+    {% else %}
+        <h5 class="display-5 p-0" style="color: white;">Добавление продукта</h5>
+        <p class="lead" style="color: white;">Форма для добавления товаров!</p>
+    {% endif %}
 </div>
-
 <!--<div>-->
-    <div class="container mt-0 p-4">
+    <div class="container mt-0 p-0">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
             <div class="col-lg-3"></div>
             <div class="col-lg-6 col-md-9 col-sm-12">
@@ -21,6 +26,7 @@
                     <div class="card-body">
                         <form method="post" action="" class="form-floating">
                             {% csrf_token %}
+                            {{ from.non_field_errors }}
                             {{ form.as_p }}
 <!--                            <div class="mb-4">-->
 <!--                                <label for="name"></label>-->
@@ -46,7 +52,13 @@
 <!--                                <label for="image" class="form-label">Добавьте изображение</label>-->
 <!--                                <input class="form-control" name="image" type="file" accept="/media/images/*" id="image">-->
 <!--                            </div>-->
-                            <button type="submit" class="btn btn-lg btn-block btn-warning">Отправить</button>
+                            {% if object %}
+                                <button type="submit" class="btn btn-lg btn-block btn-warning">Сохранить</button>
+                                <a class="btn btn-lg btn-block btn-secondary" href="{% url 'catalog:product_item' product.pk %}" >Отмена</a>
+                            {% else %}
+                                <button type="submit" class="btn btn-lg btn-block btn-warning">Добавить</button>
+                                <a class="btn btn-lg btn-block btn-secondary" href="{% url 'catalog:catalog' %}" >Отмена</a>
+                            {% endif %}
                         </form>
                     </div>
                 </div>

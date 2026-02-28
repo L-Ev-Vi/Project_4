@@ -5,9 +5,11 @@ from django.http import HttpRequest
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from catalog.forms import ProductForm
 
 from catalog.models import Category, Contacts, Product
+
 
 # CBV
 
@@ -62,10 +64,32 @@ class AddProductView(CreateView):
     После успешного добавления продукта рендится страница об успешной операции."""
 
     model = Product  # определяем модель
-    fields = ["name", "category", "description", "price", "image"]  # указываем поля формы
+    form_class = ProductForm  # указываем форму
     template_name = "catalog/add_product.html"  # определяем шаблон
     success_url = reverse_lazy("catalog:message")  # определяем URL-адрес для перехода
 
+
+class UpdateProductView(UpdateView):
+    """Классовое представление принимающее GET и POST запрос и возвращающее страницу для редактирования продукта.
+    После успешного добавления продукта рендится страница продукта."""
+
+    model = Product  # определяем модель
+    form_class = ProductForm  # указываем форму
+    template_name = "catalog/add_product.html"  # определяем шаблон
+
+    def get_success_url(self):
+        """Метод перенаправления на страницу продукта после её редактирования."""
+        return reverse_lazy("catalog:product_item", args=[self.kwargs.get('pk')])
+
+
+class DeleteProductView(DeleteView):
+    """Классовое представление принимающее GET и POST запросы,
+    и возвращающее страницу подтверждения об удалении статьи."""
+
+    model = Product  # определяем модель
+    template_name = "catalog/delete_product.html"  # определяем шаблон
+    success_url = reverse_lazy("catalog:catalog")  # определяем URL-адрес для перехода
+    context_object_name = "product"  # определяем переменную для использования в шаблоне
 
 # FBV
 
