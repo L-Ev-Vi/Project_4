@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 
     "catalog",
     "blog",
+
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
