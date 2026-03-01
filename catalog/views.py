@@ -6,13 +6,13 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 from catalog.forms import ProductForm
 
 from catalog.models import Category, Contacts, Product
 
 
 # CBV
-
 
 class CatalogView(ListView):
     """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
@@ -22,13 +22,45 @@ class CatalogView(ListView):
     context_object_name = "page_object"  # определяем переменную для использования в шаблоне
     paginate_by = 6  # определяем количество продуктов на странице
 
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
+    def get_queryset(self) -> Any:
+        """Переопределённый метод 'get_queryset'.
+        Метод отбирает только те товары у которых метод публикации равин 'True'."""
+        return super().get_queryset().filter(publication=True)
+
+
+class ProductCategoriesView(ListView):
+    """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
+
+    model = Product  # определяем модель
+    template_name = "catalog/product_category.html"  # определяем шаблон
+    context_object_name = "page_object"  # определяем переменную для использования в шаблоне
+    paginate_by = 6  # определяем количество продуктов на странице
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["cate"] = Category.objects.get(id=self.kwargs["pk"])
+        context["categories"] = Category.objects.all()
+        return context
+
+    def get_queryset(self) -> Any:
+        """Переопределённый метод 'get_queryset'.
+        Метод отбирает только товары относящиеся к одной категории и у которых метод публикации равин 'True'."""
+        return super().get_queryset().filter(publication=True, category=self.kwargs["pk"])
+
 
 class ContactView(View):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу с контактами."""
 
     def get(self, request: HttpRequest) -> Any:
         """Метод генерации HTML-кода при GET-запросе (страницы Контактов)"""
-        context = {"contact": get_object_or_404(Contacts)}
+        context = {"contact": get_object_or_404(Contacts), "categories": Category.objects.all()}
         return render(request, "catalog/contacts.html", context)
 
     def post(self, request: HttpRequest) -> Any:
@@ -45,6 +77,12 @@ class ProductItemView(DetailView):
     template_name = "catalog/product_item.html"  # определяем шаблон
     context_object_name = "product"  # определяем переменную для использования в шаблоне
 
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
     def post(self, request: HttpRequest, **kwargs: Any) -> Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
@@ -58,6 +96,12 @@ class Message(TemplateView):
 
     template_name = "catalog/product_added.html"  # определяем шаблон
 
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
 
 class AddProductView(CreateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления продукта.
@@ -68,6 +112,12 @@ class AddProductView(CreateView):
     template_name = "catalog/add_product.html"  # определяем шаблон
     success_url = reverse_lazy("catalog:message")  # определяем URL-адрес для перехода
 
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
 
 class UpdateProductView(UpdateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для редактирования продукта.
@@ -76,6 +126,12 @@ class UpdateProductView(UpdateView):
     model = Product  # определяем модель
     form_class = ProductForm  # указываем форму
     template_name = "catalog/add_product.html"  # определяем шаблон
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
 
     def get_success_url(self):
         """Метод перенаправления на страницу продукта после её редактирования."""
@@ -90,6 +146,12 @@ class DeleteProductView(DeleteView):
     template_name = "catalog/delete_product.html"  # определяем шаблон
     success_url = reverse_lazy("catalog:catalog")  # определяем URL-адрес для перехода
     context_object_name = "product"  # определяем переменную для использования в шаблоне
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
 
 # FBV
 

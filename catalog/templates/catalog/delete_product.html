@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="row g-0">
-                            <form method="post" class="pt-2 my-md-1 pt-md-2 text-center">
+                            <form method="post" class="pt-2 my-md-1 pt-md-2 text-center" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <button type="submit" class="col-7 mb-2 btn btn-outline-danger">Удалить</button>
                                 <a class="col-7 mb-2 btn btn-outline-primary" href="{% url 'catalog:product_item' product.pk %}" >Отмена</a>

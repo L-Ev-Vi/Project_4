@@ -14,7 +14,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         """Клас для добавления данных к форме."""
         model = Product  # определяем модель
-        fields = ["category", "name", "description", "price", "image"]
+        fields = ["category", "name", "description", "price", "image", "publication"]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Метод стилизации полей формы."""
@@ -23,7 +23,8 @@ class ProductForm(forms.ModelForm):
         self.fields["name"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Название товара'})
         self.fields["description"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Описание'})
         self.fields["price"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Цена товара'})
-        self.fields["image"].widget.attrs.update({'class': 'form-control'})
+        self.fields["image"].widget.attrs.update({'class': 'form-control', 'accept': '/media/*'})
+        self.fields["publication"].widget.attrs.update({'class': 'form-check-input'})
 
     def clean_name(self) -> Any:
         """Метод валидации названия товара."""
@@ -49,12 +50,3 @@ class ProductForm(forms.ModelForm):
         if price < 0:
             raise ValidationError("Цена продукта не может быть отрицательной!")
         return price
-
-    def clean(self):
-        """Метод проверяющий уникальность товара по названию и описанию."""
-        cleaned_data = super().clean()
-        name = cleaned_data.get("name")
-        description = cleaned_data.get("description")
-        if Product.objects.filter(name=name, description=description).exists():
-            raise ValidationError("Товар с таким названием и описанием уже существует!")
-        return cleaned_data

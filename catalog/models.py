@@ -25,15 +25,21 @@ class Product(models.Model):
 
     name: str = models.CharField(max_length=150, verbose_name="Наименование")
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
-    image = models.ImageField(upload_to="images/", null=True, blank=True, verbose_name="Изображения")
+    image = models.ImageField(upload_to="images/", default="images/default.jpg", null=True, blank=True, verbose_name="Изображения")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product", verbose_name="категория")
     price = models.FloatField(verbose_name="Цена")
+    publication = models.BooleanField(default=True, verbose_name="Признак публикации")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateField(auto_now=True, verbose_name="Дата последнего изменения")
 
     def __str__(self) -> str:
         """Метод определяет строковое представление объекта."""
         return f"{self.name} - {self.price}"
+
+    def delete(self, *args, **kwargs):
+        """При вызове метода 'delete' медиафайл также автоматически удаляется bpb cbcntvs."""
+        self.image.delete()
+        super(Product, self).delete(*args, **kwargs)
 
     class Meta:
         """Клас который добавляет метаданные к модели Category."""
