@@ -42,8 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "crispy_forms",
+    "crispy_bootstrap5",
+
     "catalog",
     "blog",
+
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
@@ -144,3 +150,6 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

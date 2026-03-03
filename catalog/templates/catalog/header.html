@@ -9,6 +9,17 @@
                   <a class="me-2 p-2 btn btn-warning" href="{% url 'catalog:catalog' %}">Каталог</a>
                 </li>
                 <li class="nav-item">
+                  <li class="nav-item dropdown">
+                    <a class="me-2 p-2 btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Категории</a>
+                    <ul class="dropdown-menu">
+                      {% for category in categories %}
+                        <li><a class="dropdown-item" href="{% url 'catalog:product_category' category.pk %}">{{ category.name }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </li>
+                <li class="nav-item">
                   <a class="me-2 p-2 btn btn-warning" href="{% url 'catalog:contacts' %}">Контакты</a>
                 </li>
                 <li class="nav-item">

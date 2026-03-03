@@ -30,6 +30,9 @@ psycopg2 = "^2.9.11"
 ipython = "^9.10.0"
 python-dotenv = "^1.2.1"
 pillow = "^12.1.1"
+crispy-bootstrap5 = "^2025.6"
+django-crispy-forms = "^2.5"
+django-cleanup = "^9.0.0"
 
 [tool.mypy]
 disallow_untyped_defs = true

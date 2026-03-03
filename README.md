@@ -12,6 +12,7 @@
 + *созданы фикстуры на основе созданных моделей;*
 + *описаны кастомные команды;*
 + *описана логика отправки электронной почты;*
++ *описана валидация и стилизация форм;*
 
 *Данные задачи были реализованны с использованием фреймворка Django который содержит весь не обходимый набора инструментов и библиотек
 для создания веб-приложений. Данный проект предназначено для запуска с локального компьютера, способ запуска описан в разделе [установка](#установка) и [запуск проекта](#запуск-проекта).*
@@ -33,6 +34,7 @@
 - [Создание кастомных команд](#создание-кастомных-команд)
 - [Создание шаблонов](#создание-шаблонов)
 - [Настройка и добавление статики](#настройка-и-добавление-статики)
+- [Создание и настройка форм](#создание-и-настройка-форм)
 - [Установка](#установка)
 - [Тестирование](#тестирование)
 - [Запуск проекта](#запуск-проекта)
@@ -55,6 +57,7 @@
 + Разобраться с созданием и использованием кастомных команд в Django;
 + Познакомится с настройками админки;
 + Освоить работу в Django shel;
++ Научится создавать и настраивать формы в Django;
 + Запуск локального-сервиса с использованием фреймворка Django;
 + Объединение и настройка всех компонентов в единое веб-приложение;
 
@@ -159,9 +162,10 @@ load_dotenv(verbose=True)
 - `from django.views.generic.edit import CreateView, View`
 - `from django.views.generic import ListView, TemplateView, DetailView`
 - `from django.urls import reverse_lazy`
-- #from django.core.paginator import Paginator - импорт класса для настройки пагинации. Ис пользуется в FBV.
+- #from django.core.paginator import Paginator - импорт класса для настройки пагинации. Используется в FBV.
 - `from django.http import HttpRequest`
 - `from django.shortcuts import render, get_object_or_404, get_list_or_404`
+- `from catalog.forms import ProductForm`
 - `from catalog.models import Product, Contacts, Category`
 
 В приложении *blog*
@@ -173,6 +177,7 @@ load_dotenv(verbose=True)
 - `from django.views.generic.edit import CreateView, UpdateView, DeleteView`
 - `from dotenv import load_dotenv`
 - `from blog.models import Article`
+- `from blog.forms import ArticleForm`
 - `from blog.utils import send_email_tu_user`
 
 #### Создание функций-контроллеров:
@@ -251,7 +256,7 @@ class CreateArticles(CreateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления статьи."""
 
     model = Article  # определяем модель
-    fields = ["heading", "content", "image", "publication"]  # указываем поля формы
+    form_class = ArticleForm  # указываем форму
     template_name = "blog/add_article.html"  # определяем шаблон
     success_url = reverse_lazy("blogs:blogs")  # определяем URL-адрес для перехода
 ```
@@ -566,6 +571,8 @@ class Command(BaseCommand):
 + *add_product.html* - шаблон представляющий страницу добавления продукта в ассортимент приложения;
 + *product_added.html* - шаблон представляющий страницу ответа от сервиса об удачном добавлении продукта;
 + *product_item.html* - шаблон представляющий страницу содержащую информацию о конкретном товаре;
++ *product_category.html* - шаблон представляющий страницу с товарами по категориям;
++ *delete_product.html* - шаблон представляющий страницу о подтверждении удаления продукта;
 
 `blog/templates/blog`
 
@@ -636,6 +643,61 @@ def media_filter(path):
 
 Пример: вставка статического изображения
 `<img src="{{ product.image | media_filter}}"`
+
+## Создание и настройка форм
+Создание и описание форм было выполнено в дерриктори каждого отдельного приложения в модуле *forms.py*.
+Такой подход помогает организовать код и сделать его более читаемым и структурированным.
+
+Для создания форм использовался класс *ModelForm* который позволяет автоматически генерировать форму на основе модели.
+
+Импорт необходимых модулей:
+```
+from typing import Any
+from django import forms
+from django.core.exceptions import ValidationError
+from catalog.models import Product
+```
+Основные параметры в ModelForm:
+
+- *model* — ссылка на модель, на основе которой будет создана форма;
+- *fields* — список полей модели, которые будут включены в форму.
+
+В формах была описана логика валидации полей с использованием исключения *ValidationError*.
+
+*ValidationError* — это исключение, которое выбрасывается, если данные не проходят валидацию. Оно используется для указания, 
+что данные формы некорректны, и включает в себя сообщения об ошибках, которые будут отображены пользователю.
+
+Стилизация форм выполнена в методе *init*, в котором настраиваются виджеты (*widget*) с использованием стилей *Bootstrap*.
+
+Пример реализации формы в приложении *catalog*:
+```
+class ProductForm(forms.ModelForm):
+    """Класс представляющий форму для добавления и редактирования продуктов."""
+
+    class Meta:
+        """Клас для добавления данных к форме."""
+        model = Product  # определяем модель
+        fields = ["category", "name", "description", "price", "image", "publication"]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Метод стилизации полей формы."""
+        super().__init__(*args, **kwargs)
+        self.fields["category"].widget.attrs.update({'class': 'form-select', 'aria-label': 'Выберите категорию'})
+        self.fields["name"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Название товара'})
+        self.fields["description"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Описание'})
+        self.fields["price"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Цена товара'})
+        self.fields["image"].widget.attrs.update({'class': 'form-control', 'accept': '/media/*'})
+        self.fields["publication"].widget.attrs.update({'class': 'form-check-input'})
+
+    def clean_name(self) -> Any:
+        """Метод валидации названия товара."""
+        name = self.cleaned_data.get("name")
+        names = name.split()
+        for word in names:
+            if word.lower() in FORBIDDEN_WORDS:
+                raise ValidationError(f"Названии товара содержит не допустимое слово '{word}'!")
+        return name
+```
 
 ## Установка
 Чтобы работать с проекта необходимо:

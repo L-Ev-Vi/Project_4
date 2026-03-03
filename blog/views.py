@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from dotenv import load_dotenv
 from django.utils.functional import Promise
+from blog.forms import ArticleForm
 
 from blog.models import Article
 from blog.utils import send_email_tu_user
@@ -32,7 +33,7 @@ class CreateArticles(CreateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления статьи."""
 
     model = Article  # определяем модель
-    fields = ["heading", "content", "image", "publication"]  # указываем поля формы
+    form_class = ArticleForm  # указываем форму
     template_name = "blog/add_article.html"  # определяем шаблон
     success_url = reverse_lazy("blogs:blogs")  # определяем URL-адрес для перехода
 
@@ -66,7 +67,7 @@ class UpdateArticles(UpdateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу редактирования статьи."""
 
     model = Article  # определяем модель
-    fields = ["heading", "content", "image", "publication"]  # указываем поля формы
+    form_class = ArticleForm  # указываем форму
     template_name = "blog/add_article.html"  # определяем шаблон
 
     def get_success_url(self) -> str:
