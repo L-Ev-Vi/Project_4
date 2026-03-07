@@ -5,14 +5,13 @@ from django.http import HttpRequest
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.forms import ProductForm
-
 from catalog.models import Category, Contacts, Product
 
-
 # CBV
+
 
 class CatalogView(ListView):
     """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
@@ -133,9 +132,9 @@ class UpdateProductView(UpdateView):
         context["categories"] = Category.objects.all()
         return context
 
-    def get_success_url(self):
+    def get_success_url(self) -> Any:
         """Метод перенаправления на страницу продукта после её редактирования."""
-        return reverse_lazy("catalog:product_item", args=[self.kwargs.get('pk')])
+        return reverse_lazy("catalog:product_item", args=[self.kwargs.get("pk")])
 
 
 class DeleteProductView(DeleteView):
@@ -152,6 +151,7 @@ class DeleteProductView(DeleteView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         return context
+
 
 # FBV
 

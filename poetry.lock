@@ -175,6 +175,25 @@ files = [
 ]
 
 [[package]]
+name = "django-countries"
+version = "8.2.0"
+description = "Provides a country field for Django models."
+optional = false
+python-versions = ">=3.8"
+groups = ["dev"]
+files = [
+    {file = "django_countries-8.2.0-py3-none-any.whl", hash = "sha256:2b2617bec7c15dc735bdec38ae89f0058e38fddfffdb19a7f6b75ef1e3d5380f"},
+    {file = "django_countries-8.2.0.tar.gz", hash = "sha256:6df3883180599052c7dfa9a8be0601792441cfb248935dc229ad1ac92e9e39e3"},
+]
+
+[package.dependencies]
+asgiref = "*"
+typing-extensions = "*"
+
+[package.extras]
+pyuca = ["pyuca"]
+
+[[package]]
 name = "django-crispy-forms"
 version = "2.5"
 description = "Best way to have Django DRY forms"
@@ -994,4 +1013,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "039d99bdd0cc9474266751ef24a20864df484a17239752b591cb979de9a1bbc3"
+content-hash = "1af3c60a42e79e4bad73aa4067d824f95a9f398cc83b77b5238ca6425e39b3a4"

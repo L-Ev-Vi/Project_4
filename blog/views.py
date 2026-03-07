@@ -5,9 +5,8 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from dotenv import load_dotenv
-from django.utils.functional import Promise
-from blog.forms import ArticleForm
 
+from blog.forms import ArticleForm
 from blog.models import Article
 from blog.utils import send_email_tu_user
 
@@ -45,7 +44,7 @@ class DetailArticle(DetailView):
     template_name = "blog/article.html"  # определяем шаблон
     context_object_name = "article"  # определяем переменную для использования в шаблоне
 
-    def get_object(self, queryset: Any =None) -> Any:
+    def get_object(self, queryset: Any = None) -> Any:
         """Метод используется для получения одного объекта, который будет отображаться в представлении.
         Метод увеличивает значение поля просмотров на одну единицу при каждом переходе на конкретный объект (статью).
         """
@@ -57,8 +56,7 @@ class DetailArticle(DetailView):
         if obj.number_views == 100:
             mail = os.getenv("EMAIL_USER")
             send_email_tu_user(
-                mail, "Уведомление",
-                f"Количество просмотров поста {obj.heading}, достигло 100 просмотров!"
+                mail, "Уведомление", f"Количество просмотров поста {obj.heading}, достигло 100 просмотров!"
             )
         return obj
 
