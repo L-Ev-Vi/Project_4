@@ -9,6 +9,7 @@
         <h2>{{ article.heading }}</h2>
         <p>Дата публикации: {{ article.created_at|date:"d F Y" }}</p>
         <p>Просмотры: {{ article.number_views }}</p>
+        <p>Автор: {{ article.user.email }}</p>
         <p>{{ article.content }}</p>
         <footer class="pt-2 my-md-1 pt-md-2">
             <a class="btn btn-primary" href="{% url 'blogs:update_article' article.pk %}">Редактировать</a>

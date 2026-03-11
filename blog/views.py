@@ -1,16 +1,13 @@
-import os
 from typing import Any
 
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from dotenv import load_dotenv
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.forms import ArticleForm
 from blog.models import Article
 from blog.utils import send_email_tu_user
-
-load_dotenv(verbose=True)
 
 
 class ListArticles(ListView):
@@ -28,13 +25,18 @@ class ListArticles(ListView):
         return super().get_queryset().filter(publication=True)
 
 
-class CreateArticles(CreateView):
+class CreateArticles(LoginRequiredMixin, CreateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления статьи."""
 
     model = Article  # определяем модель
     form_class = ArticleForm  # указываем форму
     template_name = "blog/add_article.html"  # определяем шаблон
     success_url = reverse_lazy("blogs:blogs")  # определяем URL-адрес для перехода
+
+    def form_valid(self, form):
+        """Метод определения автора статьи после успешной валидации формы."""
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class DetailArticle(DetailView):
@@ -54,14 +56,14 @@ class DetailArticle(DetailView):
         obj.save()
         # логика отправки сообщения на указанный адрес электронной почты при достижении 100 просмотров статьи
         if obj.number_views == 100:
-            mail = os.getenv("EMAIL_USER")
+            mail = obj.user.email
             send_email_tu_user(
-                mail, "Уведомление", f"Количество просмотров поста {obj.heading}, достигло 100 просмотров!"
+                mail, "Уведомление", f"Количество просмотров поста '{obj.heading}', достигло 100 просмотров!"
             )
         return obj
 
 
-class UpdateArticles(UpdateView):
+class UpdateArticles(LoginRequiredMixin, UpdateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу редактирования статьи."""
 
     model = Article  # определяем модель
@@ -74,7 +76,7 @@ class UpdateArticles(UpdateView):
         return reverse_lazy("blogs:article", kwargs={"pk": self.object.pk})
 
 
-class DeleteArticle(DeleteView):
+class DeleteArticle(LoginRequiredMixin, DeleteView):
     """Классовое представление принимающее GET и POST запросы,
     и возвращающее страницу подтверждения об удалении статьи."""
 

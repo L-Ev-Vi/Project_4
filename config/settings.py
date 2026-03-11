@@ -167,4 +167,7 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = "catalog:catalog"
 LOGOUT_REDIRECT_URL = "catalog:catalog"
 
-# LOGIN_URL = "users:login"
+LOGIN_URL = "users:login"
+
+COUNTRIES_FIRST_AUTO_DETECT = True
+COUNTRIES_FIRST = ['RU',]

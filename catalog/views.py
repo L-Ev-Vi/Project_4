@@ -6,14 +6,36 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from catalog.forms import ProductForm
 from catalog.models import Category, Contacts, Product
 
+
+class MixinContextList(ListView):
+    """Класс-миксин возвращающий ссылку на список товаров"""
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
+
+class MixinContextCreate(CreateView):
+    """Класс-миксин возвращающий ссылку на один товаров"""
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий."""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
+
 # CBV
 
 
-class CatalogView(ListView):
+class CatalogView(MixinContextList, ListView):
     """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
 
     model = Product  # определяем модель
@@ -21,19 +43,13 @@ class CatalogView(ListView):
     context_object_name = "page_object"  # определяем переменную для использования в шаблоне
     paginate_by = 6  # определяем количество продуктов на странице
 
-    def get_context_data(self, **kwargs: Any) -> Any:
-        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
-        context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
-        return context
-
     def get_queryset(self) -> Any:
         """Переопределённый метод 'get_queryset'.
         Метод отбирает только те товары у которых метод публикации равин 'True'."""
         return super().get_queryset().filter(publication=True)
 
 
-class ProductCategoriesView(ListView):
+class ProductCategoriesView(MixinContextList, ListView):
     """Классовое представление принимающее GET запрос и возвращающее страницу с товарами."""
 
     model = Product  # определяем модель
@@ -45,7 +61,6 @@ class ProductCategoriesView(ListView):
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
         context = super().get_context_data(**kwargs)
         context["cate"] = Category.objects.get(id=self.kwargs["pk"])
-        context["categories"] = Category.objects.all()
         return context
 
     def get_queryset(self) -> Any:
@@ -66,10 +81,11 @@ class ContactView(View):
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
-        return render(request, "catalog/message.html", {"name": name})
+        categories = Category.objects.all()
+        return render(request, "catalog/message.html", {"name": name, "categories": categories})
 
 
-class ProductItemView(DetailView):
+class ProductItemView(LoginRequiredMixin, DetailView):
     """Классовое представление принимающее GET запрос и возвращающее страницу описывающую свойства продукта."""
 
     model = Product  # определяем модель
@@ -86,7 +102,8 @@ class ProductItemView(DetailView):
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
-        return render(request, "catalog/message.html", {"name": name})
+        categories = Category.objects.all()
+        return render(request, "catalog/message.html", {"name": name, "categories": categories})
 
 
 class Message(TemplateView):
@@ -102,7 +119,7 @@ class Message(TemplateView):
         return context
 
 
-class AddProductView(CreateView):
+class AddProductView(LoginRequiredMixin, MixinContextCreate, CreateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для добавления продукта.
     После успешного добавления продукта рендится страница об успешной операции."""
 
@@ -111,14 +128,13 @@ class AddProductView(CreateView):
     template_name = "catalog/add_product.html"  # определяем шаблон
     success_url = reverse_lazy("catalog:message")  # определяем URL-адрес для перехода
 
-    def get_context_data(self, **kwargs: Any) -> Any:
-        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
-        context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
-        return context
+    def form_valid(self, form):
+        """Метод определения пользователя, который добавил продукт, после успешной валидации формы."""
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
-class UpdateProductView(UpdateView):
+class UpdateProductView(LoginRequiredMixin, MixinContextCreate, UpdateView):
     """Классовое представление принимающее GET и POST запрос и возвращающее страницу для редактирования продукта.
     После успешного добавления продукта рендится страница продукта."""
 
@@ -126,18 +142,12 @@ class UpdateProductView(UpdateView):
     form_class = ProductForm  # указываем форму
     template_name = "catalog/add_product.html"  # определяем шаблон
 
-    def get_context_data(self, **kwargs: Any) -> Any:
-        """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
-        context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
-        return context
-
     def get_success_url(self) -> Any:
         """Метод перенаправления на страницу продукта после её редактирования."""
         return reverse_lazy("catalog:product_item", args=[self.kwargs.get("pk")])
 
 
-class DeleteProductView(DeleteView):
+class DeleteProductView(LoginRequiredMixin, DeleteView):
     """Классовое представление принимающее GET и POST запросы,
     и возвращающее страницу подтверждения об удалении статьи."""
 
@@ -151,7 +161,6 @@ class DeleteProductView(DeleteView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         return context
-
 
 # FBV
 

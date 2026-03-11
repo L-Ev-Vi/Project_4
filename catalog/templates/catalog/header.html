@@ -26,8 +26,26 @@
                   <a class="me-2 p-2 btn btn-warning" href="{% url 'catalog:add_product' %}">Добавить продукт</a>
                 </li>
                 <li class="nav-item">
-                  <a class="me-2 p-2 btn btn-warning" href="{% url 'blogs:blogs' %}">Блог магазина</a>
+                  <a class="me-2 p-2 btn btn-primary" href="{% url 'blogs:blogs' %}">Блог магазина</a>
                 </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="me-2 p-2 btn btn-outline-warning" href="{% url 'users:edit_profile' %}">Редактировать профиль</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="me-2 p-2 btn btn-danger">Выйти</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="me-2 p-2 btn btn-outline-warning" href="{% url 'users:login' %}">Войти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="me-2 p-2 btn btn-outline-warning" href="{% url 'users:register' %}">Зарегистрироваться</a>
+                    </li>
+                {% endif %}
               </ul>
               <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search"/>
