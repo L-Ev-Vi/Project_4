@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from typing import Any
 
 
 class Category(models.Model):
@@ -32,7 +31,7 @@ class Product(models.Model):
     )
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product", verbose_name="категория")
     price = models.FloatField(verbose_name="Цена")
-    publication = models.BooleanField(default=True, verbose_name="Признак публикации")
+    publication = models.BooleanField(default=False, verbose_name="Признак публикации")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateField(auto_now=True, verbose_name="Дата последнего изменения")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name="product",
@@ -54,6 +53,7 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["name"]
         db_table = "product"
+        permissions = [("can_unpublish_product", "Can unpublish product"),]
 
 
 class Contacts(models.Model):

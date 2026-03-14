@@ -6,9 +6,10 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 
-from catalog.forms import ProductForm
+from catalog.forms import ProductForm, ModeratorProductForm
 from catalog.models import Category, Contacts, Product
 
 
@@ -146,6 +147,16 @@ class UpdateProductView(LoginRequiredMixin, MixinContextCreate, UpdateView):
         """Метод перенаправления на страницу продукта после её редактирования."""
         return reverse_lazy("catalog:product_item", args=[self.kwargs.get("pk")])
 
+    def get_form_class(self):
+        """Метод выполняющий проверку прав доступа на редактирование объекта."""
+        user = self.request.user
+        if user == self.object.user:
+            return ProductForm
+        elif user.has_perm("catalog.can_unpublish_product"):
+            return ModeratorProductForm
+        else:
+            raise PermissionDenied
+
 
 class DeleteProductView(LoginRequiredMixin, DeleteView):
     """Классовое представление принимающее GET и POST запросы,
@@ -161,6 +172,16 @@ class DeleteProductView(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         return context
+
+    # def get_form_class(self):
+    #     """Метод выполняющий проверку прав доступа на редактирование объекта."""
+    #     user = self.request.user
+    #     if user == self.object.user:
+    #         return ProductForm
+    #     elif user.has_perm("can_unpublish_product"):
+    #         return ModeratorProductForm
+    #     else:
+    #         raise PermissionDenied
 
 # FBV
 
