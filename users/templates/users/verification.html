@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Обратная связь{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+<div class="row justify-content-evenly mt-5 mb-5">
+    <div class="col-5">
+        <div class="card text-bg-dark">
+          <img src="/media/images/a.jpg" class="card-img" alt="...">
+          <div class="card-img-overlay">
+              <div class="row">
+                <div class="col-6"></div>
+                <div class="col-6">
+                    <h5 class="card-title" style="color: black;">Мы отправили ссылку на электронную почту указанную при регистрации, для завершения регистрации, перейди по ней и будем дружить!</h5>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="row g-0">
+            <footer class="text-center pt-4 my-md-1 pt-md-2">
+                <a class="col-7 mx-auto btn-lg btn-block btn btn-warning" href="{% url 'catalog:catalog' %}">Вернуться в каталог</a>
+            </footer>
+        </div>
+    </div>
+</div>
+{% endblock %}

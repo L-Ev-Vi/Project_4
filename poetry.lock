@@ -175,6 +175,25 @@ files = [
 ]
 
 [[package]]
+name = "django-countries"
+version = "8.2.0"
+description = "Provides a country field for Django models."
+optional = false
+python-versions = ">=3.8"
+groups = ["dev"]
+files = [
+    {file = "django_countries-8.2.0-py3-none-any.whl", hash = "sha256:2b2617bec7c15dc735bdec38ae89f0058e38fddfffdb19a7f6b75ef1e3d5380f"},
+    {file = "django_countries-8.2.0.tar.gz", hash = "sha256:6df3883180599052c7dfa9a8be0601792441cfb248935dc229ad1ac92e9e39e3"},
+]
+
+[package.dependencies]
+asgiref = "*"
+typing-extensions = "*"
+
+[package.extras]
+pyuca = ["pyuca"]
+
+[[package]]
 name = "django-crispy-forms"
 version = "2.5"
 description = "Best way to have Django DRY forms"
@@ -188,6 +207,25 @@ files = [
 
 [package.dependencies]
 django = ">=4.2"
+
+[[package]]
+name = "django-phonenumber-field"
+version = "8.4.0"
+description = "An international phone number field for django models."
+optional = false
+python-versions = ">=3.10"
+groups = ["dev"]
+files = [
+    {file = "django_phonenumber_field-8.4.0-py3-none-any.whl", hash = "sha256:7a1cb3a6456edb54d879f11ffa0acb227ded08c93b587035d0f28093f0e46511"},
+    {file = "django_phonenumber_field-8.4.0.tar.gz", hash = "sha256:2b83e843dac35eec6a69880a166487235b737a71a1e38c9a52e5ad67d6996083"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+
+[package.extras]
+phonenumbers = ["phonenumbers (>=7.0.2)"]
+phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
 name = "django-stubs"
@@ -596,6 +634,18 @@ files = [
 ptyprocess = ">=0.5"
 
 [[package]]
+name = "phonenumbers"
+version = "9.0.25"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = ">=2.5"
+groups = ["dev"]
+files = [
+    {file = "phonenumbers-9.0.25-py2.py3-none-any.whl", hash = "sha256:b1fd6c20d588f5bcd40af3899d727a9f536364211ec6eac554fcd75ca58992a3"},
+    {file = "phonenumbers-9.0.25.tar.gz", hash = "sha256:a5f236fa384c6a77378d7836c8e486ade5f984ad2e8e6cc0dbe5124315cdc81b"},
+]
+
+[[package]]
 name = "pillow"
 version = "12.1.1"
 description = "Python Imaging Library (fork)"
@@ -994,4 +1044,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "039d99bdd0cc9474266751ef24a20864df484a17239752b591cb979de9a1bbc3"
+content-hash = "d1d682e1170970820124b6be3cbb1d3d6757be4eb364b794cce90683e12eb8e6"

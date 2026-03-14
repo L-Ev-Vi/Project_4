@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Авторизация пользователя{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+<div class="pricing-header pt-md-1 pb-md-1 mx-auto text-center">
+    <h5 class="display-5 p-0" style="color: white;">Авторизация</h5>
+</div>
+    <div class="container mt-0 p-0">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6 col-md-9 col-sm-12">
+                <div class="card p-5">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal text-center">Вход в систему</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="" class="form-signin">
+                            {% csrf_token %}
+                            {{ from.non_field_errors }}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-lg btn-block btn-success">Войти</button>
+                            <a class="btn btn-lg btn-block btn-secondary" href="{% url 'catalog:catalog' %}" >Отмена</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

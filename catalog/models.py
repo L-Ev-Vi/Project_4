@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+from typing import Any
 
 
 class Category(models.Model):
@@ -25,12 +27,16 @@ class Product(models.Model):
 
     name: str = models.CharField(max_length=150, verbose_name="Наименование")
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
-    image = models.ImageField(upload_to="images/", default="images/default.jpg", blank=True, verbose_name="Изображения")
+    image = models.ImageField(
+        upload_to="images/", default="images/default.jpg", blank=True, verbose_name="Изображения"
+    )
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product", verbose_name="категория")
     price = models.FloatField(verbose_name="Цена")
     publication = models.BooleanField(default=True, verbose_name="Признак публикации")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateField(auto_now=True, verbose_name="Дата последнего изменения")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name="product",
+                             verbose_name="Пользователь")
 
     def __str__(self) -> str:
         """Метод определяет строковое представление объекта."""

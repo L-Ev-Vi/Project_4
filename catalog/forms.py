@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 from catalog.models import Product
 
-FORBIDDEN_WORDS = ["казино", "криптовалюта", "крипта", "биржа", "дешево", "бесплатно", "обман", 'полиция', "радар"]
+FORBIDDEN_WORDS = ["казино", "криптовалюта", "крипта", "биржа", "дешево", "бесплатно", "обман", "полиция", "радар"]
 
 
 class ProductForm(forms.ModelForm):
@@ -13,18 +13,19 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         """Клас для добавления данных к форме."""
+
         model = Product  # определяем модель
         fields = ["category", "name", "description", "price", "image", "publication"]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Метод стилизации полей формы."""
         super().__init__(*args, **kwargs)
-        self.fields["category"].widget.attrs.update({'class': 'form-select', 'aria-label': 'Выберите категорию'})
-        self.fields["name"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Название товара'})
-        self.fields["description"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Описание'})
-        self.fields["price"].widget.attrs.update({'class': 'form-control', 'placeholder': 'Цена товара'})
-        self.fields["image"].widget.attrs.update({'class': 'form-control', 'accept': '/media/*'})
-        self.fields["publication"].widget.attrs.update({'class': 'form-check-input'})
+        self.fields["category"].widget.attrs.update({"class": "form-select", "aria-label": "Выберите категорию"})
+        self.fields["name"].widget.attrs.update({"class": "form-control", "placeholder": "Название товара"})
+        self.fields["description"].widget.attrs.update({"class": "form-control", "placeholder": "Описание"})
+        self.fields["price"].widget.attrs.update({"class": "form-control", "placeholder": "Цена товара"})
+        self.fields["image"].widget.attrs.update({"class": "form-control", "accept": "/media/*"})
+        self.fields["publication"].widget.attrs.update({"class": "form-check-input"})
 
     def clean_name(self) -> Any:
         """Метод валидации названия товара."""
