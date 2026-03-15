@@ -33,4 +33,4 @@ class Command(BaseCommand):
         for category_data in categories:
             Category.objects.create(**category_data)
 
-        call_command("loaddata", "catalog/product_fixture.json", "--ignorenonexistent")
+        call_command("loaddata", "catalog/management/commands/product_fixture.json", "--ignorenonexistent")

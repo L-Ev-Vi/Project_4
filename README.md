@@ -532,8 +532,8 @@ class CategoryAdmin(admin.ModelAdmin):
 - `python -Xutf8 manage.py dumpdata blog.Article --output blog/article_fixture.json --indent 4`
 
 В результате выполнения данных команд бы ли получены *json* файлы:
-- *[category_fixture.json](catalog/category_fixture.json)*
-- *[product_fixture.json](catalog/product_fixture.json)*
+- *[category_fixture.json](catalog/management/commands/category_fixture.json)*
+- *[product_fixture.json](catalog/management/commands/product_fixture.json)*
 - *[article_fixture.json](blog/article_fixture.json)*
 
 Расположенные в корневой папке приложения *catalog* и *blog*
