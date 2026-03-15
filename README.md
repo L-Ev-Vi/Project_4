@@ -534,7 +534,7 @@ class CategoryAdmin(admin.ModelAdmin):
 В результате выполнения данных команд бы ли получены *json* файлы:
 - *[category_fixture.json](catalog/management/commands/category_fixture.json)*
 - *[product_fixture.json](catalog/management/commands/product_fixture.json)*
-- *[article_fixture.json](blog/article_fixture.json)*
+- *[article_fixture.json](blog/management/commands/article_fixture.json)*
 
 Расположенные в корневой папке приложения *catalog* и *blog*
 Для загрузки данных из фикстур в базу данных использовалась команда:
