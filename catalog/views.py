@@ -1,14 +1,16 @@
 from typing import Any
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+
 # from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
-from catalog.forms import ProductForm, ModeratorProductForm
+
+from catalog.forms import ModeratorProductForm, ProductForm
 from catalog.models import Category, Contacts, Product
 
 
@@ -174,8 +176,10 @@ class DeleteProductView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         """Метод проверки условия на доступ к представлению."""
-        return self.request.user.has_perm(
-            "catalog.can_unpublish_product") or self.get_object().owner == self.request.user
+        return (
+            self.request.user.has_perm("catalog.can_unpublish_product") or self.get_object().owner == self.request.user
+        )
+
 
 # FBV
 

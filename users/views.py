@@ -5,15 +5,14 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from catalog.models import Category
 from catalog.views import MixinContextCreate
-from users.forms import FormUser, ChangeUser, AuthenticationUser, PasswordChangeUserForms
+from users.forms import AuthenticationUser, ChangeUser, FormUser, PasswordChangeUserForms
 from users.models import User
 
 
@@ -32,12 +31,13 @@ class MyLogin(LoginView):
 
 class MyLogout(LogoutView):
     """Классовое представление для выхода пользователей из системы."""
+
     pass
 
 
 class Verification(TemplateView):
     """Классовое представление принимающее GET запрос,
-        и возвращающее страницу с сообщением об необходимости подтверждения почты."""
+    и возвращающее страницу с сообщением об необходимости подтверждения почты."""
 
     template_name = "users/verification.html"  # определяем шаблон
 
@@ -50,6 +50,7 @@ class Verification(TemplateView):
 
 class CreateUser(MixinContextCreate, CreateView):
     """Классовое представление для регистрации пользователей."""
+
     model = User  # определяем модель
     form_class = FormUser  # указываем форму
     template_name = "users/register_user.html"  # определяем шаблон
@@ -86,18 +87,21 @@ def email_verification(request, token):
 
 class UpdateUser(MixinContextCreate, UpdateView):
     """Классовое представление для редактирования пользователя."""
+
     model = User  # определяем модель
     form_class = ChangeUser  # указываем форму
     template_name = "users/register_user.html"  # определяем шаблон
     success_url = reverse_lazy("catalog:catalog")  # определяем URL-адрес для перехода
 
-    def get_object(self, queryset = None):
+    def get_object(self, queryset=None):
         return self.request.user
+
 
 class PasswordsChangeUser(PasswordChangeView):
     """Классовое представление для смены пароля пользователя."""
+
     model = User  # определяем модель
-    form_class = PasswordChangeUserForms # указываем форму
+    form_class = PasswordChangeUserForms  # указываем форму
     template_name = "users/change-password.html"  # определяем шаблон
     success_url = reverse_lazy("users:edit_profile")  # определяем URL-адрес для перехода
 
@@ -111,7 +115,6 @@ class PasswordsChangeUser(PasswordChangeView):
         """Метод отправки письма после успешного изменения пароля."""
         user = form.save()
         user.save()
-        host = self.request.get_host()
         self.send_email(user.email)
         return super().form_valid(form)
 

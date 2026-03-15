@@ -161,7 +161,7 @@ EMAIL_USE_SSL = True if os.getenv("EMAIL_USE_SSL") == "True" else False
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 LOGIN_REDIRECT_URL = "catalog:catalog"
 LOGOUT_REDIRECT_URL = "catalog:catalog"
@@ -169,4 +169,6 @@ LOGOUT_REDIRECT_URL = "catalog:catalog"
 LOGIN_URL = "users:login"
 
 COUNTRIES_FIRST_AUTO_DETECT = True
-COUNTRIES_FIRST = ['RU',]
+COUNTRIES_FIRST = [
+    "RU",
+]

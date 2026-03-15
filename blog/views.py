@@ -1,10 +1,10 @@
 from typing import Any
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from blog.forms import ArticleForm
 from blog.models import Article
@@ -97,5 +97,4 @@ class DeleteArticle(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         """Метод проверки условия на доступ к представлению."""
-        return self.request.user.has_perm(
-            "blog.delete_article") or self.get_object().owner == self.request.user
+        return self.request.user.has_perm("blog.delete_article") or self.get_object().owner == self.request.user

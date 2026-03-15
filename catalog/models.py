@@ -34,8 +34,13 @@ class Product(models.Model):
     publication = models.BooleanField(default=False, verbose_name="Признак публикации")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateField(auto_now=True, verbose_name="Дата последнего изменения")
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name="product",
-                             verbose_name="Пользователь")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=1,
+        on_delete=models.CASCADE,
+        related_name="product",
+        verbose_name="Пользователь",
+    )
 
     def __str__(self) -> str:
         """Метод определяет строковое представление объекта."""
@@ -53,7 +58,9 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["name"]
         db_table = "product"
-        permissions = [("can_unpublish_product", "Can unpublish product"),]
+        permissions = [
+            ("can_unpublish_product", "Can unpublish product"),
+        ]
 
 
 class Contacts(models.Model):

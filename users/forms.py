@@ -1,4 +1,5 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
+
 from users.models import User
 
 
@@ -12,29 +13,40 @@ class MixinStyle:
             if isinstance(value, bool):
                 self.fields[key].widget.attrs.update({"class": "form-check-input"})
             else:
-                self.fields[key].widget.attrs.update({'class': 'form-control'})
+                self.fields[key].widget.attrs.update({"class": "form-control"})
 
 
 class FormUser(MixinStyle, UserCreationForm):
     """Класс представляющий форму для регистрации пользователей."""
+
     usable_password = None
 
-    class Meta(UserCreationForm.Meta):
+    class Meta(UserCreationForm):
         model = User
         fields = ["email", "username", "first_name", "last_name", "country", "phone_number", "avatar"]
 
 
 class AuthenticationUser(MixinStyle, AuthenticationForm):
     """Класс представляющий форму для входа пользователя в систему."""
+
     pass
 
 
 class ChangeUser(UserChangeForm):
     """Класс представляющий форму для редактирования пользователей."""
 
-    class Meta(UserChangeForm.Meta):
+    class Meta(UserChangeForm):
         model = User
-        fields = ["email", "username", "first_name", "last_name", "country", "phone_number", "avatar", "password",]
+        fields = [
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "country",
+            "phone_number",
+            "avatar",
+            "password",
+        ]
 
     def __init__(self, *args, **kwargs) -> None:
         """Метод стилизации полей формы."""
@@ -50,4 +62,5 @@ class ChangeUser(UserChangeForm):
 
 class PasswordChangeUserForms(MixinStyle, PasswordChangeForm):
     """Класс представляющий форму для смены пароля пользователя."""
+
     pass
