@@ -760,7 +760,7 @@ class ProductForm(forms.ModelForm):
 - **1)`python manage.py createadmin` (Windows) - создание суперпользователя (логин: `admin@mail.ru`, пароль: `asd1234zxc`)**
 - **2)`python manage.py add_catalog` (Windows) - добавление первичных продуктов в каталог товаров**
 - **3)`python manage.py add_blog` (Windows) - добавление первичных статей в блог магазина**
-- **4)`python manage.py add_group` (Windows) - создание групп для добавления мадераторов продуктов в магазине и статей в блоге магазина**
+- **4)`python manage.py add_group` (Windows) - создание групп для добавления модераторов продуктов в магазине и статей в блоге магазина**
 
 Для запуска веб-сервиса, в терминале командной строки введите одну из команд:
 - на Windows через *Terminal:* `python manage.py runserver`
