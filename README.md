@@ -791,7 +791,7 @@ class CatalogService:
    - [macOS](https://www.youtube.com/watch?v=snLQ6GsxnLk);
    - [Linux](https://www.youtube.com/watch?v=FcTRbMFNdlU);
    
-   **Настройка PostgreSQL в проект Django описана в разделе [первичные настройки](#Первичные настройки)**
+   **Настройка PostgreSQL в проект Django описана в разделе [первичные настройки](#первичные-настройки)**
 5. Скачать Redis для вышей ОС;
    - [Windows](https://github.com/microsoftarchive/redis/releases.);
    - macOS `brew install redis`;
@@ -799,7 +799,7 @@ class CatalogService:
      - `sudo apt update` 
      - `sudo apt install redis-server`;
      
-     **Настройка Redis в проект Django описана в разделе [первичные настройки](#Первичные настройки)**
+     **Настройка Redis в проект Django описана в разделе [первичные настройки](#первичные-настройки)**
 
 ## Тестирование
 
