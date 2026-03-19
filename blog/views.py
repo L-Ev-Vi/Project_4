@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.conf import settings
+from django.core.cache import cache
 
 from blog.forms import ArticleForm
 from blog.models import Article
@@ -22,7 +24,13 @@ class ListArticles(ListView):
     def get_queryset(self) -> Any:
         """Переопределённый метод 'get_queryset'.
         Метод отбирает только те статьи у которых метод публикации равин 'True'."""
-
+        if settings.CACHE_ENABLED:
+            key = ("articles")
+            articles = cache.get(key)
+            if not articles:
+                articles = super().get_queryset().filter(publication=True)
+                cache.set(key, articles, 60 * 15)
+            return articles
         return super().get_queryset().filter(publication=True)
 
 

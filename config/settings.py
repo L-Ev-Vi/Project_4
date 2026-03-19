@@ -171,9 +171,9 @@ LOGIN_URL = "users:login"
 COUNTRIES_FIRST_AUTO_DETECT = True
 COUNTRIES_FIRST = ["RU",]
 
-LOW_CACHED = True if os.getenv('LOW_CACHED') == 'True' else False
+CACHE_ENABLED = True if os.getenv('CACHE_ENABLED') == 'True' else False
 
-if LOW_CACHED:
+if CACHE_ENABLED:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",

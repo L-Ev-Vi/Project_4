@@ -14,6 +14,7 @@ from django.views.decorators.cache import cache_page
 
 from catalog.forms import ModeratorProductForm, ProductForm
 from catalog.models import Category, Contacts, Product
+from catalog.service import CatalogService
 
 
 class MixinContextList(ListView):
@@ -22,7 +23,7 @@ class MixinContextList(ListView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий."""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
+        context["categories"] = CatalogService.get_list_categories()
         return context
 
 
@@ -32,7 +33,7 @@ class MixinContextCreate(CreateView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий."""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
+        context["categories"] = CatalogService.get_list_categories()
         return context
 
 
@@ -50,7 +51,7 @@ class CatalogView(MixinContextList, ListView):
     def get_queryset(self) -> Any:
         """Переопределённый метод 'get_queryset'.
         Метод отбирает только те товары у которых метод публикации равин 'True'."""
-        return super().get_queryset().filter(publication=True)
+        return CatalogService.get_list_products()
 
 
 class ProductCategoriesView(MixinContextList, ListView):
@@ -64,13 +65,13 @@ class ProductCategoriesView(MixinContextList, ListView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
         context = super().get_context_data(**kwargs)
-        context["cate"] = Category.objects.get(id=self.kwargs["pk"])
+        context["cate"] = CatalogService.get_category(self.kwargs["pk"])
         return context
 
     def get_queryset(self) -> Any:
         """Переопределённый метод 'get_queryset'.
         Метод отбирает только товары относящиеся к одной категории и у которых метод публикации равин 'True'."""
-        return super().get_queryset().filter(publication=True, category=self.kwargs["pk"])
+        return CatalogService.get_list_products_category(self.kwargs["pk"])
 
 
 class ContactView(View):
@@ -78,14 +79,14 @@ class ContactView(View):
 
     def get(self, request: HttpRequest) -> Any:
         """Метод генерации HTML-кода при GET-запросе (страницы Контактов)"""
-        context = {"contact": get_object_or_404(Contacts), "categories": Category.objects.all()}
+        context = {"contact": CatalogService.get_contacts(), "categories": CatalogService.get_list_categories()}
         return render(request, "catalog/contacts.html", context)
 
     def post(self, request: HttpRequest) -> Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
-        categories = Category.objects.all()
+        categories = CatalogService.get_list_categories()
         return render(request, "catalog/message.html", {"name": name, "categories": categories})
 
 
@@ -100,14 +101,14 @@ class ProductItemView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
+        context["categories"] = CatalogService.get_list_categories()
         return context
 
     def post(self, request: HttpRequest, **kwargs: Any) -> Any:
         """Метод генерации HTML-кода при POST-запросе(при заполнении и отправке формы).
         В методе передаются дополнительные данные об имени пользователя заполнившего форму"""
         name = request.POST.get("name")
-        categories = Category.objects.all()
+        categories = CatalogService.get_list_categories()
         return render(request, "catalog/message.html", {"name": name, "categories": categories})
 
 
@@ -120,7 +121,7 @@ class Message(TemplateView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
+        context["categories"] = CatalogService.get_list_categories()
         return context
 
 
@@ -174,7 +175,7 @@ class DeleteProductView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_context_data(self, **kwargs: Any) -> Any:
         """Переопределённый метод 'get_context_data'. Метод передаёт список категорий в шаблон."""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
+        context["categories"] = CatalogService.get_list_categories()
         return context
 
     def test_func(self):
