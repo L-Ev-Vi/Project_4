@@ -15,6 +15,8 @@
 + *описана валидация и стилизация форм;*
 + *описана логика регистрации и авторизации пользователей;*
 + *настройка прав доступа;*
++ *настройка кэширования;*
++ *описанная бизнес логика вынесена в отдельный функциональный слой;*
 
 *Данные задачи были реализованны с использованием фреймворка Django который содержит весь не обходимый набора инструментов и библиотек
 для создания веб-приложений. Данный проект предназначено для запуска с локального компьютера, способ запуска описан в разделе [установка](#установка) и [запуск проекта](#запуск-проекта).*
@@ -37,6 +39,7 @@
 - [Создание шаблонов](#создание-шаблонов)
 - [Настройка и добавление статики](#настройка-и-добавление-статики)
 - [Создание и настройка форм](#создание-и-настройка-форм)
+- [Сервисный слой и Бизнес-логика](#сервисный-слой-и-бизнес-логика)
 - [Установка](#установка)
 - [Тестирование](#тестирование)
 - [Запуск проекта](#запуск-проекта)
@@ -62,7 +65,9 @@
 + Научится создавать и настраивать формы в Django;
 + Научится описывать логику регистрации пользователей в сервисе;
 + Разобраться с методами авторизации пользователей в Django;
-+ Научится настраивать и создавать прова доступа для разных категорий пользователей в Django;
++ Научится настраивать и создавать права доступа для разных категорий пользователей в Django;
++ Научится подключать Redis к проекту Django;
++ Научится настраивать кэширование через Redis;
 + Запуск локального-сервиса с использованием фреймворка Django;
 + Объединение и настройка всех компонентов в единое веб-приложение;
 
@@ -104,7 +109,8 @@ load_dotenv(verbose=True)
             "PORT": os.getenv("PORT"),
         }
       }` — настройки базы данных. Настройки импортированы из переменной окружения *.env*;
- - `ALLOWED_HOSTS = ["*"]` — список доменных имен, которые могут обслуживаться приложением. При отгрузках на сервере добавляется ваш домен. В данном проекте стоит звёздочка, что означает доступно всем;
+ - `ALLOWED_HOSTS = ["*"]` — список доменных имен, которые могут обслуживаться приложением. 
+При отгрузках на сервере добавляется ваш домен. В данном проекте стоит звёздочка, что означает доступно всем;
  - `INSTALLED_APPS = [
     ...,
     "crispy_forms",
@@ -141,20 +147,33 @@ load_dotenv(verbose=True)
  - `LOGIN_URL = "users:login"` — настройка URL перенаправления не авторизованных пользователей;
 
  - `COUNTRIES_FIRST_AUTO_DETECT = True`
- - `COUNTRIES_FIRST = ['RU',]` — настройки выборки при заполнении поля указывающего страну
+ - `COUNTRIES_FIRST = ['RU',]` — настройки выборки при заполнении поля указывающего страну;
+
+ - `CACHE_ENABLED = True if os.getenv('CACHE_ENABLED') == 'True' else False` — настройка режима низкого уровня кэширования;
+ - `if CACHE_ENABLED:
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('REDIS_HOST'), }}` — настройка кеширования в файле конфигурации проекта *settings.py*. 
+Указываем, что используете Redis в качестве кеша, а также задаете необходимые параметры для подключения к Redis-серверу.;
 
 Остальные настройки были уставлены по умолчанию.
 
 #### Первичные настройки также включают в себя создание БД в ручном режиме. Для создания БД и работы данного проекта используется СУБД PostgreSQL.
 #### Для создания БД в СУБД PostgreSQL используйте команду: CREATE DATABASE name_database(имя вашей БД)
 #### Также в проекте представлен файл *.env.sample* который вам нужно переименовать в *.env* и указать в нём свои значения:
+**Django**
+
 *SECRET_KEY = секретный ключ, используемый для криптографических подписей.*
 *DEBUG = режим отладки. Включен (True), Выключен (False)*
+
+**Postgresql**
+
 *NAME = имя вашей базы данных.*
 *USER = имя пользователя PostgreSQL.*
 *PASSWORD = пароль пользователя PostgreSQL.*
 *HOST = адрес сервера базы данных.*
 *PORT = порт, на котором работает PostgreSQL, обычно 5432*
+
+**Сервис отправки писем**
 
 *EMAIL_HOST= адрес SMTP-сервера*
 *EMAIL_HOST_USER = адрес вашей электронной почты*
@@ -163,6 +182,11 @@ load_dotenv(verbose=True)
 *EMAIL_USE_TLS = включает использование TLS для шифрования соединения. Включен (True), Выключен (False)*
 *EMAIL_USE_SSL = включает использование SSL для шифрования соединения. Включен (True), Выключен (False)*
 *EMAIL_BACKEND = бэкенд для отправки писем*
+
+**Redis**
+
+*REDIS_HOST = URL указывающий на расположение Redis-сервера с используемым портом и номером используемой базой данны (от 1 до 15)*
+*CACHE_ENABLED = режим низкого уровня кэширования. Включен (True), Выключен (False)*
 
 ## Создание и регистрация приложения 
 Для создания нового приложения в проекте Django использовалась команда:
@@ -195,14 +219,19 @@ load_dotenv(verbose=True)
 В приложении *catalog*
 
 - `from typing import Any`
-- `from django.views.generic.edit import CreateView, View`
-- `from django.views.generic import ListView, TemplateView, DetailView`
-- `from django.urls import reverse_lazy`
-- #from django.core.paginator import Paginator - импорт класса для настройки пагинации. Используется в FBV.
+- `from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin`
+- `from django.core.exceptions import PermissionDenied`
+-  #from django.core.paginator import Paginator - импорт класса для настройки пагинации. Используется в FBV. 
 - `from django.http import HttpRequest`
-- `from django.shortcuts import render, get_object_or_404, get_list_or_404`
-- `from catalog.forms import ProductForm`
-- `from catalog.models import Product, Contacts, Category`
+- `from django.shortcuts import get_list_or_404, get_object_or_404, render`
+- `from django.urls import reverse_lazy`
+- `from django.views.generic import DetailView, ListView, TemplateView, View`
+- `from django.views.generic.edit import CreateView, DeleteView, UpdateView`
+- `from django.utils.decorators import method_decorator`
+- `from django.views.decorators.cache import cache_page`
+- `from catalog.forms import ModeratorProductForm, ProductForm`
+- `from catalog.models import Category, Contacts, Product`
+- `from catalog.service import CatalogService`
 
 В приложении *blog*
 
@@ -315,7 +344,7 @@ def send_email_tu_user(mail: str, subject: str, message: str) -> None:
         print(e)
 ```
 
-Полную реализацию контроллеров вы можете посмотреть в модулях *views.py* которые расположены в корневых папках приложений.
+Полную реализацию контроллеров вы можете посмотреть в модулях [*views.py*](catalog/views.py) которые расположены в корневых папках приложений.
 
 ## Настройка маршрутизации
 При создании проект Django, в корневой директории проекта создается файл 
@@ -736,6 +765,19 @@ class ProductForm(forms.ModelForm):
         return name
 ```
 
+## Сервисный слой и Бизнес-логика
+Для организации структуры кода бизнес-логики, был создан отдельный модуль [*service.py*](catalog/service.py) 
+В данном модуле описаны бизнес процессы, что обеспечивает модульность, читаемость и поддерживаемость кода.
+````
+from .models import Product, Category, Contacts
+from django.core.cache import cache
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+
+class CatalogService:
+    """Класс описывающий методы бизнес-логики приложения 'catalog'."""
+````
+
 ## Установка
 Чтобы работать с проекта необходимо:
 1. Загрузить проект в IDE через инструмент *'clone repository'* или команду `git clon`
@@ -748,6 +790,16 @@ class ProductForm(forms.ModelForm):
    - инструкцию по установке на [Windows](https://www.youtube.com/watch?v=TrDBb1zY2SM);
    - [macOS](https://www.youtube.com/watch?v=snLQ6GsxnLk);
    - [Linux](https://www.youtube.com/watch?v=FcTRbMFNdlU);
+   
+   **Настройка PostgreSQL в проект Django описана в разделе [первичные настройки](#Первичные настройки)**
+5. Скачать Redis для вышей ОС;
+   - [Windows](https://github.com/microsoftarchive/redis/releases.);
+   - macOS `brew install redis`;
+   - Linux 
+     - `sudo apt update` 
+     - `sudo apt install redis-server`;
+     
+     **Настройка Redis в проект Django описана в разделе [первичные настройки](#Первичные настройки)**
 
 ## Тестирование
 
@@ -762,10 +814,38 @@ class ProductForm(forms.ModelForm):
 - **3)`python manage.py add_blog` (Windows) - добавление первичных статей в блог магазина**
 - **4)`python manage.py add_group` (Windows) - создание групп для добавления модераторов продуктов в магазине и статей в блоге магазина**
 
-Для запуска веб-сервиса, в терминале командной строки введите одну из команд:
-- на Windows через *Terminal:* `python manage.py runserver`
-- на iOS через *a-Shell:* `python3 manage.py runserver`
-- на Linux через *Linux Terminal:* `python3 manage.py runserver`
+**В отдельном окне терминала в водим команду `redis-server` для запуска брокера кеширования Redis (перед запуском Redis не забудьте настроить подключение в файле *.env.sample* и [settings.py](config/settings.py))**
+**После успешного применения команды `redis-server` должен появится похожее сообщение:**
+                _._                               
+
+           _.-``__ ''-._                          
+
+      _.-``    `.  `_.  ''-._           Redis 3.0.504 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                
+
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379 |    `-._   `.                
+
+ |`-._`-._    `-.__.-'    _.-'_.-'|               
+
+ |    `-._`-._        _.-'_.-'    |         
+  `-._    `-._`-.__.-'_.-'    _.-'                
+
+ |`-._`-._    `-.__.-'    _.-'_.-'|               
+
+ |    `-._`-._        _.-'_.-'    |               
+
+  `-._    `-._`-.__.-'_.-'    _.-'                
+
+      `-._    `-.__.-'    _.-'                    
+
+          `-._        _.-'                        
+
+              `-.__.-'
+**Для запуска веб-сервиса, в терминале командной строки введите одну из команд:**
+- **на Windows через *Terminal:* `python manage.py runserver`**
+- **на iOS через *a-Shell:* `python3 manage.py runserver`**
+- **на Linux через *Linux Terminal:* `python3 manage.py runserver`**
 
 После успешного запуска программы вы увидите сообщение похожее на это:
 

@@ -7,10 +7,10 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView, View
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.generic import DetailView, ListView, TemplateView, View
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.forms import ModeratorProductForm, ProductForm
 from catalog.models import Category, Contacts, Product

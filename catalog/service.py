@@ -1,7 +1,9 @@
-from .models import Product, Category, Contacts
-from django.core.cache import cache
 from django.conf import settings
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
+
+from .models import Category, Contacts, Product
+
 
 class CatalogService:
     """Класс описывающий методы бизнес-логики приложения 'catalog'."""
@@ -10,7 +12,7 @@ class CatalogService:
     def get_list_categories():
         """Метод передаёт список категорий."""
         if settings.CACHE_ENABLED:
-            key = ("categories")
+            key = "categories"
             categories = cache.get(key)
             if not categories:
                 categories = Category.objects.all()
@@ -22,7 +24,7 @@ class CatalogService:
     def get_category(category_id):
         """Метод передаёт категорию."""
         if settings.CACHE_ENABLED:
-            key = (f"category_{category_id}")
+            key = f"category_{category_id}"
             category = cache.get(key)
             if not category:
                 category = Category.objects.get(id=category_id)
@@ -34,7 +36,7 @@ class CatalogService:
     def get_list_products():
         """Метод передаёт список продуктов."""
         if settings.CACHE_ENABLED:
-            key = ("products")
+            key = "products"
             products = cache.get(key)
             if not products:
                 products = Product.objects.filter(publication=True)
@@ -46,7 +48,7 @@ class CatalogService:
     def get_list_products_category(category_id):
         """Метод передаёт список продуктов в указанной категории."""
         if settings.CACHE_ENABLED:
-            key = (f"products_{category_id}")
+            key = f"products_{category_id}"
             products = cache.get(key)
             if not products:
                 products = Product.objects.filter(publication=True, category=category_id)
@@ -58,7 +60,7 @@ class CatalogService:
     def get_contacts():
         """Метод передаёт контакты."""
         if settings.CACHE_ENABLED:
-            key = ("contacts")
+            key = "contacts"
             contacts = cache.get(key)
             if not contacts:
                 contacts = get_object_or_404(Contacts)
