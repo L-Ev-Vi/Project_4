@@ -19,4 +19,4 @@ class Command(BaseCommand):
         with connection.cursor() as cur:
             cur.execute("ALTER SEQUENCE article_id_seq RESTART WITH 1")  # чистый SQL запрос
 
-        call_command("loaddata", "blog/article_fixture.json", "--ignorenonexistent")
+        call_command("loaddata", "blog/management/commands/article_fixture.json", "--ignorenonexistent")

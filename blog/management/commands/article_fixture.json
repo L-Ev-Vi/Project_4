@@ -8,8 +8,8 @@
         "image": "https://i.pinimg.com/736x/51/f4/cf/51f4cf057d4d630c8ae9632af826f41f.jpg",
         "publication": true,
         "created_at": "2024-02-24",
-        "number_views": 2,
-        "user": 1
+        "number_views": 0,
+        "owner": 1
     }
 },
 {
@@ -21,8 +21,8 @@
         "image": "https://i.pinimg.com/736x/9d/98/51/9d9851f44030f5988a072910c26e3f4c.jpg",
         "publication": true,
         "created_at": "2023-02-24",
-        "number_views": 2,
-        "user": 1
+        "number_views": 0,
+        "owner": 1
     }
 },
 {
@@ -35,7 +35,7 @@
         "publication": true,
         "created_at": "2022-02-24",
         "number_views": 0,
-        "user": 1
+        "owner": 1
     }
 },
 {
@@ -47,8 +47,8 @@
         "image": "https://i07.fotocdn.net/s219/e4d317ef96998f99/public_pin_m/3014308069.jpg",
         "publication": true,
         "created_at": "2021-02-24",
-        "number_views": 8,
-        "user": 1
+        "number_views": 0,
+        "owner": 1
     }
 }
 ]

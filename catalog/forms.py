@@ -51,3 +51,18 @@ class ProductForm(forms.ModelForm):
         if price < 0:
             raise ValidationError("Цена продукта не может быть отрицательной!")
         return price
+
+
+class ModeratorProductForm(forms.ModelForm):
+    """Класс представляющий форму для модератора на изменение признака публикации продукта."""
+
+    class Meta:
+        """Клас для добавления данных к форме."""
+
+        model = Product  # определяем модель
+        fields = ["publication"]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Метод стилизации полей формы."""
+        super().__init__(*args, **kwargs)
+        self.fields["publication"].widget.attrs.update({"class": "form-check-input"})

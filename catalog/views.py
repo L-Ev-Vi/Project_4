@@ -1,14 +1,16 @@
 from typing import Any
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+
 # from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-from catalog.forms import ProductForm
+from catalog.forms import ModeratorProductForm, ProductForm
 from catalog.models import Category, Contacts, Product
 
 
@@ -130,7 +132,7 @@ class AddProductView(LoginRequiredMixin, MixinContextCreate, CreateView):
 
     def form_valid(self, form):
         """Метод определения пользователя, который добавил продукт, после успешной валидации формы."""
-        form.instance.user = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
@@ -146,8 +148,18 @@ class UpdateProductView(LoginRequiredMixin, MixinContextCreate, UpdateView):
         """Метод перенаправления на страницу продукта после её редактирования."""
         return reverse_lazy("catalog:product_item", args=[self.kwargs.get("pk")])
 
+    def get_form_class(self):
+        """Метод выполняющий проверку прав доступа на редактирование объекта."""
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        elif user.has_perm("catalog.can_unpublish_product"):
+            return ModeratorProductForm
+        else:
+            raise PermissionDenied
 
-class DeleteProductView(LoginRequiredMixin, DeleteView):
+
+class DeleteProductView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """Классовое представление принимающее GET и POST запросы,
     и возвращающее страницу подтверждения об удалении статьи."""
 
@@ -161,6 +173,13 @@ class DeleteProductView(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         return context
+
+    def test_func(self):
+        """Метод проверки условия на доступ к представлению."""
+        return (
+            self.request.user.has_perm("catalog.can_unpublish_product") or self.get_object().owner == self.request.user
+        )
+
 
 # FBV
 

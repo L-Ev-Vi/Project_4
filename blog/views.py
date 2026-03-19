@@ -1,9 +1,10 @@
 from typing import Any
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from blog.forms import ArticleForm
 from blog.models import Article
@@ -35,7 +36,7 @@ class CreateArticles(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         """Метод определения автора статьи после успешной валидации формы."""
-        form.instance.user = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
@@ -56,7 +57,7 @@ class DetailArticle(DetailView):
         obj.save()
         # логика отправки сообщения на указанный адрес электронной почты при достижении 100 просмотров статьи
         if obj.number_views == 100:
-            mail = obj.user.email
+            mail = obj.owner.email
             send_email_tu_user(
                 mail, "Уведомление", f"Количество просмотров поста '{obj.heading}', достигло 100 просмотров!"
             )
@@ -72,11 +73,20 @@ class UpdateArticles(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self) -> str:
         """Метод перенаправления на страницу статьи после её редактирования."""
-
         return reverse_lazy("blogs:article", kwargs={"pk": self.object.pk})
 
+    def get_form_class(self):
+        """Метод выполняющий проверку прав доступа на редактирование статьи."""
+        user = self.request.user
+        if user == self.object.owner:
+            return ArticleForm
+        elif user.has_perm("blog.change_article"):
+            return ArticleForm
+        else:
+            raise PermissionDenied
 
-class DeleteArticle(LoginRequiredMixin, DeleteView):
+
+class DeleteArticle(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """Классовое представление принимающее GET и POST запросы,
     и возвращающее страницу подтверждения об удалении статьи."""
 
@@ -84,3 +94,7 @@ class DeleteArticle(LoginRequiredMixin, DeleteView):
     template_name = "blog/delete_article.html"  # определяем шаблон
     success_url = reverse_lazy("blogs:blogs")  # определяем URL-адрес для перехода
     context_object_name = "article"  # определяем переменную для использования в шаблоне
+
+    def test_func(self):
+        """Метод проверки условия на доступ к представлению."""
+        return self.request.user.has_perm("blog.delete_article") or self.get_object().owner == self.request.user
