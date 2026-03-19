@@ -169,6 +169,14 @@ LOGOUT_REDIRECT_URL = "catalog:catalog"
 LOGIN_URL = "users:login"
 
 COUNTRIES_FIRST_AUTO_DETECT = True
-COUNTRIES_FIRST = [
-    "RU",
-]
+COUNTRIES_FIRST = ["RU",]
+
+LOW_CACHED = True if os.getenv('LOW_CACHED') == 'True' else False
+
+if LOW_CACHED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('REDIS_HOST'),
+        }
+    }

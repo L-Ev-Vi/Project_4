@@ -9,6 +9,8 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from catalog.forms import ModeratorProductForm, ProductForm
 from catalog.models import Category, Contacts, Product
@@ -87,6 +89,7 @@ class ContactView(View):
         return render(request, "catalog/message.html", {"name": name, "categories": categories})
 
 
+@method_decorator(cache_page(60 * 5), name="dispatch")
 class ProductItemView(LoginRequiredMixin, DetailView):
     """Классовое представление принимающее GET запрос и возвращающее страницу описывающую свойства продукта."""
 
