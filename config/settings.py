@@ -172,3 +172,13 @@ COUNTRIES_FIRST_AUTO_DETECT = True
 COUNTRIES_FIRST = [
     "RU",
 ]
+
+CACHE_ENABLED = True if os.getenv("CACHE_ENABLED") == "True" else False
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("REDIS_HOST"),
+        }
+    }
