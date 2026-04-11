@@ -47,7 +47,7 @@ class Product(models.Model):
         return f"{self.name} - {self.price}"
 
     def delete(self, *args, **kwargs):
-        """При вызове метода 'delete' медиафайл также автоматически удаляется bpb cbcntvs."""
+        """При вызове метода 'delete' медиафайл также автоматически удаляется из системы."""
         self.image.delete()
         super(Product, self).delete(*args, **kwargs)
 
