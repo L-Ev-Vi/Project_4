@@ -616,7 +616,7 @@ class Command(BaseCommand):
         
 ````
 Остальная часть кода описана в файле [add_catalog.py](catalog/management/commands/add_catalog.py) приложения *catalog*, 
-и в файле [add_catalog.py](catalog/management/commands/add_catalog.py) приложения *blog*.
+и в файле [add_blog.py](blog/management/commands/add_blogs.py) приложения *blog*.
 
 После создания кастомной команды она была вызвана с помощью команды:
 
